@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Date;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -80,5 +81,21 @@ public class ParkingServiceTest {
         parkingService.processIncomingVehicle();
 
         verify(ticketDAO, Mockito.times(1)).searchVehicleRegNumber(anyString());
+    }
+
+    @Test
+    public void should_saveTicketWithDiscount_WhenProcessIncomingVehicleAndRecurringUsers() {
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
+        when(ticketDAO.searchVehicleRegNumber(anyString())).thenReturn(true);
+        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+        parkingService.processIncomingVehicle();
+
+        verify(ticketDAO, Mockito.times(1)).saveTicket(argThat(ticket -> {
+            assertThat(ticket.getDiscount()).isTrue();
+            return true;
+        }));
     }
 }
