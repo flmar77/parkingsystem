@@ -7,6 +7,7 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -29,14 +30,18 @@ public class ParkingServiceTest {
     @Mock
     private static TicketDAO ticketDAO;
 
-    @Test
-    public void should_updateParkingSpot_WhenExitingVehicle() {
+    @BeforeEach
+    public void setUpEachTest() {
         try {
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to set up test mock objects");
         }
+    }
+
+    @Test
+    public void should_updateParkingSpot_WhenExitingVehicle() {
         when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
         when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
@@ -54,12 +59,6 @@ public class ParkingServiceTest {
 
     @Test
     public void should_saveTicket_WhenProcessIncomingVehicle() {
-        try {
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to set up test mock objects");
-        }
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
@@ -68,5 +67,18 @@ public class ParkingServiceTest {
         parkingService.processIncomingVehicle();
 
         verify(ticketDAO, Mockito.times(1)).saveTicket(any(Ticket.class));
+    }
+
+    @Test
+    public void should_searchVehicleRegNumber_WhenProcessIncomingVehicle() {
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(ticketDAO.searchVehicleRegNumber("ABCDEF")).thenReturn(true);
+        when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
+        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+        parkingService.processIncomingVehicle();
+
+        verify(ticketDAO, Mockito.times(1)).searchVehicleRegNumber(anyString());
     }
 }

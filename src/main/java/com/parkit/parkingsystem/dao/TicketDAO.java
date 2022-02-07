@@ -88,4 +88,20 @@ public class TicketDAO {
         }
         return false;
     }
+
+    public boolean searchVehicleRegNumber(String vehicleRegNumber) {
+        Connection con = null;
+        try {
+            con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.SEARCH_VEHICLEREGNUMBER);
+            ps.setString(1, vehicleRegNumber);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (Exception ex) {
+            logger.error("Error searching vehicleRegNumber : " + vehicleRegNumber, ex);
+        } finally {
+            dataBaseConfig.closeConnection(con);
+        }
+        return false;
+    }
 }

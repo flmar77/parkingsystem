@@ -44,7 +44,13 @@ public class ParkingService {
                 ticket.setPrice(0);
                 ticket.setInTime(inTime);
                 ticket.setOutTime(null);
-                ticket.setDiscount(false);
+                if (ticketDAO.searchVehicleRegNumber(vehicleRegNumber)) {
+                    ticket.setDiscount(true);
+                    System.out.println("Welcome Back! As a recurring user of our parking lot, you'll benefit from a 5% discount");
+                } else {
+                    ticket.setDiscount(false);
+                }
+
                 ticketDAO.saveTicket(ticket);
                 System.out.println("Generated Ticket and saved in DB");
                 System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
@@ -99,6 +105,7 @@ public class ParkingService {
     }
 
     public void processExitingVehicle() {
+        /* TODO : Fix to update current ticket*/
         try {
             String vehicleRegNumber = getVehicleRegNumber();
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
