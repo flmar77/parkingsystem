@@ -10,7 +10,6 @@ import java.util.Date;
 public class FareCalculatorService {
 
     public void calculateFare(Ticket ticket) {
-        /* TODO : fix to 2 decimals price*/
         if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
             throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
         }
@@ -45,6 +44,7 @@ public class FareCalculatorService {
         }
     }
 
+    // TODO : refactor within a util class
     private double round(double value, int decimals) {
         if (decimals < 0) throw new IllegalArgumentException("invalid decimals");
 
