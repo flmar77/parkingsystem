@@ -7,7 +7,7 @@ public class ParkingSpot {
     private ParkingType parkingType;
     private boolean isAvailable;
 
-    public ParkingSpot(int number, ParkingType parkingType, boolean isAvailable) {
+    public ParkingSpot(final int number, final ParkingType parkingType, final boolean isAvailable) {
         this.number = number;
         this.parkingType = parkingType;
         this.isAvailable = isAvailable;
@@ -17,7 +17,7 @@ public class ParkingSpot {
         return number;
     }
 
-    public void setId(int number) {
+    public void setId(final int number) {
         this.number = number;
     }
 
@@ -25,7 +25,7 @@ public class ParkingSpot {
         return parkingType;
     }
 
-    public void setParkingType(ParkingType parkingType) {
+    public void setParkingType(final ParkingType parkingType) {
         this.parkingType = parkingType;
     }
 
@@ -33,14 +33,18 @@ public class ParkingSpot {
         return isAvailable;
     }
 
-    public void setAvailable(boolean available) {
+    public void setAvailable(final boolean available) {
         isAvailable = available;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ParkingSpot that = (ParkingSpot) o;
         return number == that.number;
     }

@@ -15,11 +15,11 @@ import java.sql.Timestamp;
 
 public class TicketDAO {
 
-    private static final Logger logger = LogManager.getLogger("TicketDAO");
+    private static final Logger LOGGER = LogManager.getLogger("TicketDAO");
 
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
-    public boolean saveTicket(Ticket ticket) {
+    public boolean saveTicket(final Ticket ticket) {
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();
@@ -34,14 +34,14 @@ public class TicketDAO {
             ps.setBoolean(6, ticket.getDiscount());
             return ps.execute();
         } catch (Exception ex) {
-            logger.error("Error fetching next available slot", ex);
+            LOGGER.error("Error fetching next available slot", ex);
         } finally {
             dataBaseConfig.closeConnection(con);
-            return false;
         }
+        return false;
     }
 
-    public Ticket getCurrentTicket(String vehicleRegNumber) {
+    public Ticket getCurrentTicket(final String vehicleRegNumber) {
         Connection con = null;
         Ticket ticket = null;
         try {
@@ -64,14 +64,14 @@ public class TicketDAO {
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
         } catch (Exception ex) {
-            logger.error("Error fetching next available slot", ex);
+            LOGGER.error("Error fetching next available slot", ex);
         } finally {
             dataBaseConfig.closeConnection(con);
             return ticket;
         }
     }
 
-    public boolean updateTicket(Ticket ticket) {
+    public boolean updateTicket(final Ticket ticket) {
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();
@@ -82,14 +82,14 @@ public class TicketDAO {
             ps.execute();
             return true;
         } catch (Exception ex) {
-            logger.error("Error saving ticket info", ex);
+            LOGGER.error("Error saving ticket info", ex);
         } finally {
             dataBaseConfig.closeConnection(con);
         }
         return false;
     }
 
-    public boolean searchVehicleRegNumber(String vehicleRegNumber) {
+    public boolean searchVehicleRegNumber(final String vehicleRegNumber) {
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();
@@ -98,7 +98,7 @@ public class TicketDAO {
             ResultSet rs = ps.executeQuery();
             return rs.next();
         } catch (Exception ex) {
-            logger.error("Error searching vehicleRegNumber : " + vehicleRegNumber, ex);
+            LOGGER.error("Error searching vehicleRegNumber : " + vehicleRegNumber, ex);
         } finally {
             dataBaseConfig.closeConnection(con);
         }
