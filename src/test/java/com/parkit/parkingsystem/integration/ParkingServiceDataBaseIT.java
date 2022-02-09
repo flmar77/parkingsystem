@@ -61,7 +61,7 @@ public class ParkingServiceDataBaseIT {
         parkingService.processIncomingVehicle();
 
         assertThat(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).isEqualTo(2);
-        assertThat(ticketDAO.getTicket("ABCDEF")).isNotNull();
+        assertThat(ticketDAO.getCurrentTicket("ABCDEF")).isNotNull();
     }
 
     @Test
@@ -72,8 +72,22 @@ public class ParkingServiceDataBaseIT {
         Thread.sleep(1000);
         parkingService.processExitingVehicle();
 
-        assertThat(ticketDAO.getTicket("ABCDEF").getOutTime()).isNotNull();
+        assertThat(ticketDAO.getCurrentTicket("ABCDEF")).isNull();
         verify(fareCalculatorService, times(1)).calculateFare(any(Ticket.class));
+    }
+
+    @Test
+    public void should_updateCurrentTicket_whenProcessExitingVehicleAndRecurringUsers() throws InterruptedException {
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
+
+        parkingService.processIncomingVehicle();
+        Thread.sleep(1000);
+        parkingService.processExitingVehicle();
+        parkingService.processIncomingVehicle();
+        Thread.sleep(1000);
+        parkingService.processExitingVehicle();
+
+        assertThat(ticketDAO.getCurrentTicket("ABCDEF")).isNull();
     }
 
 }

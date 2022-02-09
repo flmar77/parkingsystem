@@ -105,10 +105,9 @@ public class ParkingService {
     }
 
     public void processExitingVehicle() {
-        /* TODO : Fix to update current ticket*/
         try {
             String vehicleRegNumber = getVehicleRegNumber();
-            Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+            Ticket ticket = ticketDAO.getCurrentTicket(vehicleRegNumber);
             Date outTime = new Date();
             ticket.setOutTime(outTime);
             fareCalculatorService.calculateFare(ticket);

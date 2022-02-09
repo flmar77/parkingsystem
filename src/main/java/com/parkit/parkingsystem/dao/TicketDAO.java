@@ -41,12 +41,12 @@ public class TicketDAO {
         }
     }
 
-    public Ticket getTicket(String vehicleRegNumber) {
+    public Ticket getCurrentTicket(String vehicleRegNumber) {
         Connection con = null;
         Ticket ticket = null;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.GET_TICKET);
+            PreparedStatement ps = con.prepareStatement(DBConstants.GET_CURRENT_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, DISCOUNT)
             ps.setString(1, vehicleRegNumber);
             ResultSet rs = ps.executeQuery();
@@ -93,7 +93,7 @@ public class TicketDAO {
         Connection con = null;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.SEARCH_VEHICLEREGNUMBER);
+            PreparedStatement ps = con.prepareStatement(DBConstants.SEARCH_VEHICLE_REG_NUMBER);
             ps.setString(1, vehicleRegNumber);
             ResultSet rs = ps.executeQuery();
             return rs.next();
