@@ -3,9 +3,9 @@ package com.parkit.parkingsystem.service;
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
+
+import static com.parkit.parkingsystem.util.Rounder.round;
 
 public class FareCalculatorService {
 
@@ -42,14 +42,5 @@ public class FareCalculatorService {
                     throw new IllegalArgumentException("Unknown Parking Type");
             }
         }
-    }
-
-    // TODO : refactor within a util class
-    private double round(double value, int decimals) {
-        if (decimals < 0) throw new IllegalArgumentException("invalid decimals");
-
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(decimals, RoundingMode.HALF_UP);
-        return bd.doubleValue();
     }
 }
