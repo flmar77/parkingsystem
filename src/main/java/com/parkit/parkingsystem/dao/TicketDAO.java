@@ -21,9 +21,11 @@ public class TicketDAO {
 
     public boolean saveTicket(final Ticket ticket) {
         Connection con = null;
+        PreparedStatement ps = null;
+        boolean result = false;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.SAVE_TICKET);
+            ps = con.prepareStatement(DBConstants.SAVE_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, DISCOUNT)
             //ps.setInt(1,ticket.getId());
             ps.setInt(1, ticket.getParkingSpot().getId());
@@ -32,24 +34,27 @@ public class TicketDAO {
             ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
             ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
             ps.setBoolean(6, ticket.getDiscount());
-            return ps.execute();
+            result = ps.execute();
         } catch (Exception ex) {
             LOGGER.error("Error fetching next available slot", ex);
         } finally {
+            dataBaseConfig.closePreparedStatement(ps);
             dataBaseConfig.closeConnection(con);
+            return result;
         }
-        return false;
     }
 
     public Ticket getCurrentTicket(final String vehicleRegNumber) {
         Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
         Ticket ticket = null;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.GET_CURRENT_TICKET);
+            ps = con.prepareStatement(DBConstants.GET_CURRENT_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, DISCOUNT)
             ps.setString(1, vehicleRegNumber);
-            ResultSet rs = ps.executeQuery();
+            rs = ps.executeQuery();
             if (rs.next()) {
                 ticket = new Ticket();
                 ParkingSpot parkingSpot = new ParkingSpot(rs.getInt(1), ParkingType.valueOf(rs.getString(7)), false);
@@ -61,11 +66,12 @@ public class TicketDAO {
                 ticket.setOutTime(rs.getTimestamp(5));
                 ticket.setDiscount(rs.getBoolean(6));
             }
-            dataBaseConfig.closeResultSet(rs);
-            dataBaseConfig.closePreparedStatement(ps);
+
         } catch (Exception ex) {
             LOGGER.error("Error fetching next available slot", ex);
         } finally {
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
             dataBaseConfig.closeConnection(con);
             return ticket;
         }
@@ -73,35 +79,42 @@ public class TicketDAO {
 
     public boolean updateTicket(final Ticket ticket) {
         Connection con = null;
+        PreparedStatement ps = null;
+        boolean result = false;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
+            ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
             ps.setDouble(1, ticket.getPrice());
             ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
             ps.setInt(3, ticket.getId());
-            ps.execute();
-            return true;
+            result = ps.execute();
         } catch (Exception ex) {
             LOGGER.error("Error saving ticket info", ex);
         } finally {
+            dataBaseConfig.closePreparedStatement(ps);
             dataBaseConfig.closeConnection(con);
+            return result;
         }
-        return false;
     }
 
     public boolean searchVehicleRegNumber(final String vehicleRegNumber) {
         Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        boolean result = false;
         try {
             con = dataBaseConfig.getConnection();
-            PreparedStatement ps = con.prepareStatement(DBConstants.SEARCH_VEHICLE_REG_NUMBER);
+            ps = con.prepareStatement(DBConstants.SEARCH_VEHICLE_REG_NUMBER);
             ps.setString(1, vehicleRegNumber);
-            ResultSet rs = ps.executeQuery();
-            return rs.next();
+            rs = ps.executeQuery();
+            result = rs.next();
         } catch (Exception ex) {
             LOGGER.error("Error searching vehicleRegNumber : " + vehicleRegNumber, ex);
         } finally {
+            dataBaseConfig.closeResultSet(rs);
+            dataBaseConfig.closePreparedStatement(ps);
             dataBaseConfig.closeConnection(con);
+            return result;
         }
-        return false;
     }
 }
