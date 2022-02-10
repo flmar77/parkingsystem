@@ -27,7 +27,7 @@ public class ParkingService {
         this.fareCalculatorService = fareCalculatorService;
     }
 
-    public void processIncomingVehicle() {
+    public void processIncomingVehicle() throws Exception {
         try {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
             if (parkingSpot != null && parkingSpot.getId() > 0) {
@@ -56,8 +56,9 @@ public class ParkingService {
                 System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
                 System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
             }
-        } catch (Exception e) {
-            LOGGER.error("Unable to process incoming vehicle", e);
+        } catch (Exception ex) {
+            LOGGER.error("Unable to process incoming vehicle", ex);
+            throw ex;
         }
     }
 
@@ -66,7 +67,7 @@ public class ParkingService {
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
 
-    public ParkingSpot getNextParkingNumberIfAvailable() {
+    private ParkingSpot getNextParkingNumberIfAvailable() throws Exception {
         int parkingNumber = 0;
         ParkingSpot parkingSpot = null;
         try {
@@ -79,32 +80,31 @@ public class ParkingService {
             }
         } catch (IllegalArgumentException ie) {
             LOGGER.error("Error parsing user input for type of vehicle", ie);
+            throw ie;
         } catch (Exception e) {
             LOGGER.error("Error fetching next available parking slot", e);
+            throw e;
         }
         return parkingSpot;
     }
 
-    private ParkingType getVehicleType() {
+    private ParkingType getVehicleType() throws Exception {
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");
         System.out.println("2 BIKE");
         int input = inputReaderUtil.readSelection();
         switch (input) {
-            case 1: {
+            case 1:
                 return ParkingType.CAR;
-            }
-            case 2: {
+            case 2:
                 return ParkingType.BIKE;
-            }
-            default: {
+            default:
                 System.out.println("Incorrect input provided");
                 throw new IllegalArgumentException("Entered input is invalid");
-            }
         }
     }
 
-    public void processExitingVehicle() {
+    public void processExitingVehicle() throws Exception {
         try {
             String vehicleRegNumber = getVehicleRegNumber();
             Ticket ticket = ticketDAO.getCurrentTicket(vehicleRegNumber);
@@ -122,6 +122,7 @@ public class ParkingService {
             }
         } catch (Exception e) {
             LOGGER.error("Unable to process exiting vehicle", e);
+            throw e;
         }
     }
 }

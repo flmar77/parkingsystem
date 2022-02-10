@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public abstract class Rounder {
-    public static double round(final double value, final int decimals) {
+    public static double round(final double value, final int decimals) throws Exception {
         if (decimals < 0) {
             throw new IllegalArgumentException("invalid decimals");
         }

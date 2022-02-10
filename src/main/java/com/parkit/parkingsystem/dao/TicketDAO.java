@@ -19,7 +19,7 @@ public class TicketDAO {
 
     public DataBaseConfig dataBaseConfig = new DataBaseConfig();
 
-    public boolean saveTicket(final Ticket ticket) {
+    public boolean saveTicket(final Ticket ticket) throws Exception {
         Connection con = null;
         PreparedStatement ps = null;
         boolean result = false;
@@ -37,6 +37,7 @@ public class TicketDAO {
             result = ps.execute();
         } catch (Exception ex) {
             LOGGER.error("Error fetching next available slot", ex);
+            throw ex;
         } finally {
             dataBaseConfig.closePreparedStatement(ps);
             dataBaseConfig.closeConnection(con);
@@ -44,7 +45,7 @@ public class TicketDAO {
         }
     }
 
-    public Ticket getCurrentTicket(final String vehicleRegNumber) {
+    public Ticket getCurrentTicket(final String vehicleRegNumber) throws Exception {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -69,6 +70,7 @@ public class TicketDAO {
 
         } catch (Exception ex) {
             LOGGER.error("Error fetching next available slot", ex);
+            throw ex;
         } finally {
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
@@ -77,7 +79,7 @@ public class TicketDAO {
         }
     }
 
-    public boolean updateTicket(final Ticket ticket) {
+    public boolean updateTicket(final Ticket ticket) throws Exception {
         Connection con = null;
         PreparedStatement ps = null;
         boolean result = false;
@@ -90,6 +92,7 @@ public class TicketDAO {
             result = ps.execute();
         } catch (Exception ex) {
             LOGGER.error("Error saving ticket info", ex);
+            throw ex;
         } finally {
             dataBaseConfig.closePreparedStatement(ps);
             dataBaseConfig.closeConnection(con);
@@ -97,7 +100,7 @@ public class TicketDAO {
         }
     }
 
-    public boolean searchVehicleRegNumber(final String vehicleRegNumber) {
+    public boolean searchVehicleRegNumber(final String vehicleRegNumber) throws Exception {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -110,6 +113,7 @@ public class TicketDAO {
             result = rs.next();
         } catch (Exception ex) {
             LOGGER.error("Error searching vehicleRegNumber : " + vehicleRegNumber, ex);
+            throw ex;
         } finally {
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);

@@ -55,7 +55,7 @@ public class ParkingServiceDataBaseIT {
     }
 
     @Test
-    public void should_returnSecondParkingSpotAndTicket_whenFirstParkingSpotBookedAndTicketCreated() {
+    public void should_returnSecondParkingSpotAndTicket_whenFirstParkingSpotBookedAndTicketCreated() throws Exception {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
         parkingService.processIncomingVehicle();
@@ -65,9 +65,10 @@ public class ParkingServiceDataBaseIT {
     }
 
     @Test
-    public void should_calculateFareAndPopulateOutTime_whenProcessExitingVehicle() throws InterruptedException {
+    public void should_calculateFareAndPopulateOutTime_whenProcessExitingVehicle() throws Exception {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
+        // TODO : to fix !
         parkingService.processIncomingVehicle();
         Thread.sleep(1000);
         parkingService.processExitingVehicle();
@@ -77,9 +78,10 @@ public class ParkingServiceDataBaseIT {
     }
 
     @Test
-    public void should_updateCurrentTicket_whenProcessExitingVehicleAndRecurringUsers() throws InterruptedException {
+    public void should_updateCurrentTicket_whenProcessExitingVehicleAndRecurringUsers() throws Exception {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
+        // TODO : to fix !
         parkingService.processIncomingVehicle();
         Thread.sleep(1000);
         parkingService.processExitingVehicle();

@@ -17,16 +17,8 @@ public class ParkingSpot {
         return number;
     }
 
-    public void setId(final int number) {
-        this.number = number;
-    }
-
     public ParkingType getParkingType() {
         return parkingType;
-    }
-
-    public void setParkingType(final ParkingType parkingType) {
-        this.parkingType = parkingType;
     }
 
     public boolean isAvailable() {

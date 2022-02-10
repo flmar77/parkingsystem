@@ -10,14 +10,17 @@ public class InputReaderUtil {
     private static Scanner scan = new Scanner(System.in);
     private static final Logger LOGGER = LogManager.getLogger("InputReaderUtil");
 
-    public int readSelection() {
+    public int readSelection() throws Exception {
+        int result = -1;
         try {
             int input = Integer.parseInt(scan.nextLine());
-            return input;
+            result = input;
         } catch (Exception e) {
             LOGGER.error("Error while reading user input from Shell", e);
             System.out.println("Error reading input. Please enter valid number for proceeding further");
-            return -1;
+            throw e;
+        } finally {
+            return result;
         }
     }
 

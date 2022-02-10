@@ -9,7 +9,12 @@ public abstract class App {
     private static final Logger LOGGER = LogManager.getLogger("App");
 
     public static void main(final String[] args) {
-        LOGGER.info("Initializing Parking System");
-        InteractiveShell.loadInterface();
+        try {
+            LOGGER.info("Initializing Parking System");
+            InteractiveShell.loadInterface();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 }
