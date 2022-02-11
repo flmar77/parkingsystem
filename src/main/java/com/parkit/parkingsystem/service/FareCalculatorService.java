@@ -3,9 +3,9 @@ package com.parkit.parkingsystem.service;
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.model.Ticket;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
-
-import static com.parkit.parkingsystem.util.Rounder.round;
 
 public class FareCalculatorService {
 
@@ -17,28 +17,36 @@ public class FareCalculatorService {
         Date inTime = ticket.getInTime();
         Date outTime = ticket.getOutTime();
 
-        long parkingTimeInMillis = outTime.getTime() - inTime.getTime();
-        double parkingTimeInHours = (double) parkingTimeInMillis / Fare.MILLIS_PER_HOUR;
-        parkingTimeInHours = round(parkingTimeInHours, 2);
+        BigDecimal parkingTimeInMillis = BigDecimal.valueOf(outTime.getTime() - inTime.getTime());
+        BigDecimal millisPerHour = BigDecimal.valueOf(Fare.MILLIS_PER_HOUR);
+        BigDecimal parkingTimeInHours = parkingTimeInMillis.divide(millisPerHour, 10, RoundingMode.HALF_UP);
 
-        if (parkingTimeInHours < Fare.FREE_TIME_IN_HOUR) {
-            ticket.setPrice(0);
-            return;
+        BigDecimal freeTimeInHour = BigDecimal.valueOf(Fare.FREE_TIME_IN_HOUR);
+
+        if (parkingTimeInHours.compareTo(freeTimeInHour) < 0) {
+            parkingTimeInHours = BigDecimal.valueOf(0);
         }
-        double discountAppliedRatio = 1;
+
+        BigDecimal discountAppliedRatio = BigDecimal.valueOf(1);
         if (ticket.getDiscount()) {
-            discountAppliedRatio = Fare.DISCOUNT_DEFAULT_RATIO;
+            discountAppliedRatio = BigDecimal.valueOf(Fare.DISCOUNT_DEFAULT_RATIO);
         }
 
+        BigDecimal ratePerHour;
         switch (ticket.getParkingSpot().getParkingType()) {
             case CAR:
-                ticket.setPrice(parkingTimeInHours * Fare.CAR_RATE_PER_HOUR * discountAppliedRatio);
+                ratePerHour = BigDecimal.valueOf(Fare.CAR_RATE_PER_HOUR);
                 break;
             case BIKE:
-                ticket.setPrice(parkingTimeInHours * Fare.BIKE_RATE_PER_HOUR * discountAppliedRatio);
+                ratePerHour = BigDecimal.valueOf(Fare.BIKE_RATE_PER_HOUR);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown Parking Type");
         }
+
+        BigDecimal rawPrice = parkingTimeInHours.multiply(discountAppliedRatio).multiply(ratePerHour);
+        BigDecimal RoundedPrice = rawPrice.setScale(2, RoundingMode.HALF_UP);
+        ticket.setPrice(RoundedPrice.doubleValue());
+
     }
 }

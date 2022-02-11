@@ -108,7 +108,7 @@ public class FareCalculatorServiceTest {
 
         fareCalculatorService.calculateFare(ticket);
 
-        assertEquals((0.75 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+        assertEquals((1.13), ticket.getPrice());
     }
 
     @Test
@@ -162,5 +162,19 @@ public class FareCalculatorServiceTest {
         fareCalculatorService.calculateFare(ticket);
 
         assertEquals(0.98, ticket.getPrice());
+    }
+
+    @Test
+    public void should_calculateRoundedFareWithDiscount() throws Exception {
+        inTime.setTime(currentTimeMillis - (45 * 60 * 1000));
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setDiscount(true);
+
+        fareCalculatorService.calculateFare(ticket);
+
+        assertEquals(1.07, ticket.getPrice());
     }
 }
