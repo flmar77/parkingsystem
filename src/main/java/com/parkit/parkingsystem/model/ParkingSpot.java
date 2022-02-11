@@ -21,28 +21,12 @@ public class ParkingSpot {
         return parkingType;
     }
 
-    public boolean isAvailable() {
+    public boolean getIsAvailable() {
         return isAvailable;
     }
 
-    public void setAvailable(final boolean available) {
+    public void setIsAvailable(final boolean available) {
         isAvailable = available;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ParkingSpot that = (ParkingSpot) o;
-        return number == that.number;
-    }
-
-    @Override
-    public int hashCode() {
-        return number;
-    }
 }
