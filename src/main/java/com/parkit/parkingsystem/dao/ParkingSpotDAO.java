@@ -34,14 +34,14 @@ public class ParkingSpotDAO {
             throw ex;
         } finally {
             dataBaseConfig.closeConnection(con);
-            return result;
         }
+        return result;
     }
 
     public boolean updateParking(final ParkingSpot parkingSpot) throws Exception {
         //update the availability fo that parking slot
         Connection con = null;
-        boolean result = false;
+        boolean result;
         try {
             con = dataBaseConfig.getConnection();
             PreparedStatement ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
@@ -55,8 +55,8 @@ public class ParkingSpotDAO {
             throw ex;
         } finally {
             dataBaseConfig.closeConnection(con);
-            return result;
         }
+        return result;
     }
 
 }

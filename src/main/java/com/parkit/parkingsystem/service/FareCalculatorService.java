@@ -9,7 +9,8 @@ import java.util.Date;
 
 public class FareCalculatorService {
 
-    public void calculateFare(final Ticket ticket) throws Exception {
+    public void calculateFare(final Ticket ticket) {
+
         if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
             throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
         }

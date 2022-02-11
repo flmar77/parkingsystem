@@ -15,10 +15,10 @@ public class ParkingService {
 
     private static final Logger LOGGER = LogManager.getLogger("ParkingService");
 
-    private FareCalculatorService fareCalculatorService;
-    private InputReaderUtil inputReaderUtil;
-    private ParkingSpotDAO parkingSpotDAO;
-    private TicketDAO ticketDAO;
+    private final FareCalculatorService fareCalculatorService;
+    private final InputReaderUtil inputReaderUtil;
+    private final ParkingSpotDAO parkingSpotDAO;
+    private final TicketDAO ticketDAO;
 
     public ParkingService(final InputReaderUtil inputReaderUtil, final ParkingSpotDAO parkingSpotDAO, final TicketDAO ticketDAO, final FareCalculatorService fareCalculatorService) {
         this.inputReaderUtil = inputReaderUtil;
@@ -33,7 +33,7 @@ public class ParkingService {
             if (parkingSpot != null && parkingSpot.getId() > 0) {
                 String vehicleRegNumber = getVehicleRegNumber();
                 parkingSpot.setAvailable(false);
-                parkingSpotDAO.updateParking(parkingSpot); //allot this parking space and mark it's availability as false
+                parkingSpotDAO.updateParking(parkingSpot); //allot this parking space and mark its availability as false
 
                 Date inTime = new Date();
                 Ticket ticket = new Ticket();
@@ -62,14 +62,14 @@ public class ParkingService {
         }
     }
 
-    private String getVehicleRegNumber() throws Exception {
+    private String getVehicleRegNumber() throws RuntimeException {
         System.out.println("Please type the vehicle registration number and press enter key");
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
 
     private ParkingSpot getNextParkingNumberIfAvailable() throws Exception {
-        int parkingNumber = 0;
-        ParkingSpot parkingSpot = null;
+        int parkingNumber;
+        ParkingSpot parkingSpot;
         try {
             ParkingType parkingType = getVehicleType();
             parkingNumber = parkingSpotDAO.getNextAvailableSlot(parkingType);
@@ -88,7 +88,7 @@ public class ParkingService {
         return parkingSpot;
     }
 
-    private ParkingType getVehicleType() throws Exception {
+    private ParkingType getVehicleType() throws IllegalArgumentException {
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");
         System.out.println("2 BIKE");

@@ -3,28 +3,28 @@ package com.parkit.parkingsystem.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class InputReaderUtil {
 
-    private static Scanner scan = new Scanner(System.in);
+    private static final Scanner scan = new Scanner(System.in);
     private static final Logger LOGGER = LogManager.getLogger("InputReaderUtil");
 
-    public int readSelection() throws Exception {
-        int result = -1;
+    public int readSelection() throws NumberFormatException {
+        int result;
         try {
-            int input = Integer.parseInt(scan.nextLine());
-            result = input;
+            result = Integer.parseInt(scan.nextLine());
         } catch (Exception e) {
             LOGGER.error("Error while reading user input from Shell", e);
             System.out.println("Error reading input. Please enter valid number for proceeding further");
             throw e;
-        } finally {
-            return result;
         }
+        return result;
+
     }
 
-    public String readVehicleRegistrationNumber() throws Exception {
+    public String readVehicleRegistrationNumber() throws NoSuchElementException, IllegalStateException, IllegalArgumentException {
         try {
             String vehicleRegNumber = scan.nextLine();
             if (vehicleRegNumber == null || vehicleRegNumber.trim().length() == 0) {

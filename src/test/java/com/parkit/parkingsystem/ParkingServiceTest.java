@@ -118,7 +118,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void should_throwIllegalArgumentException_WhenProcessIncomingVehicleAndWrongVehicleType() throws Exception {
+    public void should_throwIllegalArgumentException_WhenProcessIncomingVehicleAndWrongVehicleType() {
         when(inputReaderUtil.readSelection()).thenReturn(3);
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
