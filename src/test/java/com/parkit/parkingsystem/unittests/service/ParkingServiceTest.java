@@ -127,12 +127,26 @@ public class ParkingServiceTest {
 
     @Test
     public void should_throwSQLException_WhenProcessIncomingVehicleAndParkingSpotDAOThrowsSQLException() throws Exception {
-        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readSelection()).thenReturn(2);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenThrow(SQLException.class);
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
         assertThrows(SQLException.class, () -> parkingService.processIncomingVehicle());
     }
 
+    @Test
+    public void should_throwException_WhenProcessExitingVehicleAndTicketDAOReturnFalse() throws Exception {
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+        Ticket ticket = new Ticket();
+        ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setVehicleRegNumber("ABCDEF");
+        when(ticketDAO.getCurrentTicket(anyString())).thenReturn(ticket);
+
+        assertThrows(Exception.class, () -> parkingService.processExitingVehicle());
+    }
 
 }

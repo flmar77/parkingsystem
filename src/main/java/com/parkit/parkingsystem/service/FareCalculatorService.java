@@ -12,7 +12,7 @@ public class FareCalculatorService {
     public void calculateFare(final Ticket ticket) {
 
         if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
-            throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
+            throw new IllegalArgumentException("Out time provided is incorrect:");
         }
 
         Date inTime = ticket.getInTime();
@@ -33,7 +33,7 @@ public class FareCalculatorService {
             discountAppliedRatio = BigDecimal.valueOf(Fare.DISCOUNT_DEFAULT_RATIO);
         }
 
-        BigDecimal ratePerHour;
+        BigDecimal ratePerHour = BigDecimal.valueOf(0);
         switch (ticket.getParkingSpot().getParkingType()) {
             case CAR:
                 ratePerHour = BigDecimal.valueOf(Fare.CAR_RATE_PER_HOUR);
@@ -41,8 +41,6 @@ public class FareCalculatorService {
             case BIKE:
                 ratePerHour = BigDecimal.valueOf(Fare.BIKE_RATE_PER_HOUR);
                 break;
-            default:
-                throw new IllegalArgumentException("Unknown Parking Type");
         }
 
         BigDecimal rawPrice = parkingTimeInHours.multiply(discountAppliedRatio).multiply(ratePerHour);
