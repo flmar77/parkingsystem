@@ -11,5 +11,6 @@ public abstract class DBConstants {
     public static final String SEARCH_VEHICLE_REG_NUMBER = "select t.ID from ticket t where t.VEHICLE_REG_NUMBER=? limit 1";
 
     public static final String CLEAN_TEST_PARKING = "update parking set available = true";
+    public static final String SET_PARKING_NOT_AVAILABLE = "update parking set available = false";
     public static final String CLEAN_TEST_TICKET = "truncate table ticket";
 }

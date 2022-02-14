@@ -28,5 +28,21 @@ public class DataBasePrepareService {
         }
     }
 
+    public void setAllParkingSpotNotAvailable() {
+
+        Connection connection = null;
+        try {
+            connection = dataBaseTestConfig.getConnection();
+
+            //set parking entries to not available
+            connection.prepareStatement(DBConstants.SET_PARKING_NOT_AVAILABLE).execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dataBaseTestConfig.closeConnection(connection);
+        }
+    }
+
 
 }

@@ -17,7 +17,11 @@ public class TicketDAO {
 
     private static final Logger LOGGER = LogManager.getLogger("TicketDAO");
 
-    public DataBaseConfig dataBaseConfig = new DataBaseConfig();
+    private final DataBaseConfig dataBaseConfig;
+
+    public TicketDAO(final DataBaseConfig dataBaseConfig) {
+        this.dataBaseConfig = dataBaseConfig;
+    }
 
     public boolean saveTicket(final Ticket ticket) throws Exception {
         Connection con = null;
@@ -34,7 +38,7 @@ public class TicketDAO {
             ps.setTimestamp(4, new Timestamp(ticket.getInTime().getTime()));
             ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
             ps.setBoolean(6, ticket.getDiscount());
-            result = ps.execute();
+            result = (ps.executeUpdate() == 1);
         } catch (Exception ex) {
             LOGGER.error("Error fetching next available slot", ex);
             throw ex;
@@ -49,7 +53,7 @@ public class TicketDAO {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        Ticket ticket = null;
+        Ticket ticket;
         try {
             con = dataBaseConfig.getConnection();
             ps = con.prepareStatement(DBConstants.GET_CURRENT_TICKET);
@@ -66,9 +70,11 @@ public class TicketDAO {
                 ticket.setInTime(rs.getTimestamp(4));
                 ticket.setOutTime(rs.getTimestamp(5));
                 ticket.setDiscount(rs.getBoolean(6));
+            } else {
+                throw new Exception("Error Getting current ticket");
             }
         } catch (Exception ex) {
-            LOGGER.error("Error fetching next available slot", ex);
+            LOGGER.error("Error Getting current ticket", ex);
             throw ex;
         } finally {
             dataBaseConfig.closeResultSet(rs);
