@@ -1,23 +1,28 @@
 package com.parkit.parkingsystem.config;
 
+import com.parkit.parkingsystem.model.Credentials;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.FileInputStream;
 import java.sql.*;
-import java.util.Properties;
 
 public class DataBaseConfig {
 
     private static final Logger LOGGER = LogManager.getLogger("DataBaseConfig");
 
+    protected final Credentials credentials;
+
+    public DataBaseConfig(Credentials credentials) {
+        this.credentials = credentials;
+    }
+
     public Connection getConnection() throws Exception {
         LOGGER.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
-        Properties properties = new Properties();
-        properties.load(new FileInputStream(".\\databaseResources\\databaseCredentials.properties"));
+
+        // End
         return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/prod?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC", properties.getProperty("datasourceUsername"), properties.getProperty("datasourcePassword"));
+                "jdbc:mysql://localhost:3306/prod?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC", credentials.getDatasourceUsername(), credentials.getDatasourcePassword());
     }
 
     public void closeConnection(final Connection con) throws SQLException {

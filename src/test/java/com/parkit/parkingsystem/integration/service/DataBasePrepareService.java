@@ -7,7 +7,11 @@ import java.sql.Connection;
 
 public class DataBasePrepareService {
 
-    final DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
+    private final DataBaseTestConfig dataBaseTestConfig;
+
+    public DataBasePrepareService(DataBaseTestConfig dataBaseTestConfig) {
+        this.dataBaseTestConfig = dataBaseTestConfig;
+    }
 
     public void clearDataBaseEntries() {
 

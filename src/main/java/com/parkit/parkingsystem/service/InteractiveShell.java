@@ -3,6 +3,7 @@ package com.parkit.parkingsystem.service;
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
+import com.parkit.parkingsystem.model.Credentials;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +21,9 @@ public abstract class InteractiveShell {
         boolean continueApp = true;
         Scanner scanner = new Scanner(System.in);
         InputReaderUtil inputReaderUtil = new InputReaderUtil(scanner);
-        DataBaseConfig dataBaseConfig = new DataBaseConfig();
+        CredentialsService credentialsService = new CredentialsService();
+        Credentials credentials = credentialsService.getCredentials();
+        DataBaseConfig dataBaseConfig = new DataBaseConfig(credentials);
         ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO(dataBaseConfig);
         TicketDAO ticketDAO = new TicketDAO(dataBaseConfig);
         FareCalculatorService fareCalculatorService = new FareCalculatorService();
@@ -53,5 +56,4 @@ public abstract class InteractiveShell {
         System.out.println("2 Vehicle Exiting - Generate Ticket Price");
         System.out.println("3 Shutdown System");
     }
-
 }

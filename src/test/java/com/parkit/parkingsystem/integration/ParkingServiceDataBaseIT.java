@@ -5,8 +5,10 @@ import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
+import com.parkit.parkingsystem.model.Credentials;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
+import com.parkit.parkingsystem.service.CredentialsService;
 import com.parkit.parkingsystem.service.FareCalculatorService;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
@@ -19,6 +21,7 @@ import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.io.IOException;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +33,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceDataBaseIT {
 
-    private static final DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
     private static ParkingSpotDAO parkingSpotDAO;
     private static DataBasePrepareService dataBasePrepareService;
     private static FareCalculatorService fareCalculatorService;
@@ -42,10 +44,13 @@ public class ParkingServiceDataBaseIT {
     private static InputReaderUtil inputReaderUtil;
 
     @BeforeAll
-    private static void setUp() {
+    private static void setUp() throws IOException {
+        CredentialsService credentialsService = new CredentialsService();
+        Credentials credentials = credentialsService.getCredentials();
+        DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig(credentials);
         parkingSpotDAO = new ParkingSpotDAO(dataBaseTestConfig);
         ticketDAO = new TicketDAO(dataBaseTestConfig);
-        dataBasePrepareService = new DataBasePrepareService();
+        dataBasePrepareService = new DataBasePrepareService(dataBaseTestConfig);
         fareCalculatorService = new FareCalculatorService();
     }
 

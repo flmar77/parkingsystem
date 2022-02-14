@@ -34,7 +34,6 @@ public class ParkingSpotDAO {
             if (rs.next()) {
                 result = rs.getInt(1);
             }
-
         } catch (Exception ex) {
             LOGGER.error("Error fetching next available slot", ex);
             throw ex;
