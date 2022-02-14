@@ -1,23 +1,28 @@
 package com.parkit.parkingsystem.service;
 
+import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class InteractiveShell {
+import java.util.Scanner;
 
-    private static final Logger logger = LogManager.getLogger("InteractiveShell");
+public abstract class InteractiveShell {
 
-    public static void loadInterface() {
-        logger.info("App initialized!!!");
+    private static final Logger LOGGER = LogManager.getLogger("InteractiveShell");
+
+    public static void loadInterface() throws Exception {
+        LOGGER.info("App initialized!!!");
         System.out.println("Welcome to Parking System!");
 
         boolean continueApp = true;
-        InputReaderUtil inputReaderUtil = new InputReaderUtil();
-        ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO();
-        TicketDAO ticketDAO = new TicketDAO();
+        Scanner scanner = new Scanner(System.in);
+        InputReaderUtil inputReaderUtil = new InputReaderUtil(scanner);
+        DataBaseConfig dataBaseConfig = new DataBaseConfig();
+        ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO(dataBaseConfig);
+        TicketDAO ticketDAO = new TicketDAO(dataBaseConfig);
         FareCalculatorService fareCalculatorService = new FareCalculatorService();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
@@ -26,19 +31,16 @@ public class InteractiveShell {
             loadMenu();
             int option = inputReaderUtil.readSelection();
             switch (option) {
-                case 1: {
+                case 1:
                     parkingService.processIncomingVehicle();
                     break;
-                }
-                case 2: {
+                case 2:
                     parkingService.processExitingVehicle();
                     break;
-                }
-                case 3: {
+                case 3:
                     System.out.println("Exiting from the system!");
                     continueApp = false;
                     break;
-                }
                 default:
                     System.out.println("Unsupported option. Please enter a number corresponding to the provided menu");
             }

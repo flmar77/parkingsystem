@@ -1,6 +1,3 @@
-# noinspection SqlResolveForFile
--- noinspection SqlNoDataSourceInspectionForFile
-
 use prod;
 ALTER table ticket
     ADD DISCOUNT bool;

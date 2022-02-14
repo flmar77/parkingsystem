@@ -1,5 +1,3 @@
--- noinspection SqlNoDataSourceInspectionForFile
-
 /* Setting up PROD DB */
 create database prod;
 use prod;

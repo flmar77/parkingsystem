@@ -9,47 +9,43 @@ import java.util.Date;
 
 public class FareCalculatorService {
 
-    public void calculateFare(Ticket ticket) {
+    public void calculateFare(final Ticket ticket) {
+
         if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
-            throw new IllegalArgumentException("Out time provided is incorrect:" + ticket.getOutTime().toString());
+            throw new IllegalArgumentException("Out time provided is incorrect:");
         }
 
         Date inTime = ticket.getInTime();
         Date outTime = ticket.getOutTime();
 
-        long parkingTimeInMillis = outTime.getTime() - inTime.getTime();
-        double parkingTimeInHours = (double) parkingTimeInMillis / 3600000;
-        parkingTimeInHours = round(parkingTimeInHours, 2);
+        BigDecimal parkingTimeInMillis = BigDecimal.valueOf(outTime.getTime() - inTime.getTime());
+        BigDecimal millisPerHour = BigDecimal.valueOf(Fare.MILLIS_PER_HOUR);
+        BigDecimal parkingTimeInHours = parkingTimeInMillis.divide(millisPerHour, 10, RoundingMode.HALF_UP);
 
-        if (parkingTimeInHours < Fare.FREE_TIME_IN_HOUR) {
-            ticket.setPrice(0);
-        } else {
-            double discountAppliedRatio = 1;
-            if (ticket.getDiscount()) {
-                discountAppliedRatio = Fare.DISCOUNT_DEFAULT_RATIO;
-            }
+        BigDecimal freeTimeInHour = BigDecimal.valueOf(Fare.FREE_TIME_IN_HOUR);
 
-            switch (ticket.getParkingSpot().getParkingType()) {
-                case CAR: {
-                    ticket.setPrice(parkingTimeInHours * Fare.CAR_RATE_PER_HOUR * discountAppliedRatio);
-                    break;
-                }
-                case BIKE: {
-                    ticket.setPrice(parkingTimeInHours * Fare.BIKE_RATE_PER_HOUR * discountAppliedRatio);
-                    break;
-                }
-                default:
-                    throw new IllegalArgumentException("Unknown Parking Type");
-            }
+        if (parkingTimeInHours.compareTo(freeTimeInHour) < 0) {
+            parkingTimeInHours = BigDecimal.valueOf(0);
         }
-    }
 
-    // TODO : refactor within a util class
-    private double round(double value, int decimals) {
-        if (decimals < 0) throw new IllegalArgumentException("invalid decimals");
+        BigDecimal discountAppliedRatio = BigDecimal.valueOf(1);
+        if (ticket.getDiscount()) {
+            discountAppliedRatio = BigDecimal.valueOf(Fare.DISCOUNT_DEFAULT_RATIO);
+        }
 
-        BigDecimal bd = BigDecimal.valueOf(value);
-        bd = bd.setScale(decimals, RoundingMode.HALF_UP);
-        return bd.doubleValue();
+        BigDecimal ratePerHour = BigDecimal.valueOf(0);
+        switch (ticket.getParkingSpot().getParkingType()) {
+            case CAR:
+                ratePerHour = BigDecimal.valueOf(Fare.CAR_RATE_PER_HOUR);
+                break;
+            case BIKE:
+                ratePerHour = BigDecimal.valueOf(Fare.BIKE_RATE_PER_HOUR);
+                break;
+        }
+
+        BigDecimal rawPrice = parkingTimeInHours.multiply(discountAppliedRatio).multiply(ratePerHour);
+        BigDecimal RoundedPrice = rawPrice.setScale(2, RoundingMode.HALF_UP);
+        ticket.setPrice(RoundedPrice.doubleValue());
+
     }
 }

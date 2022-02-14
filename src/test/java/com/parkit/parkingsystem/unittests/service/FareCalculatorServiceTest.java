@@ -1,4 +1,4 @@
-package com.parkit.parkingsystem;
+package com.parkit.parkingsystem.unittests.service;
 
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
@@ -63,28 +63,6 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void shouldThrowException_whenCalculateFareWithUnknownType() {
-        inTime.setTime(currentTimeMillis - (60 * 60 * 1000));
-        ParkingSpot parkingSpot = new ParkingSpot(1, null, false);
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
-        ticket.setParkingSpot(parkingSpot);
-
-        assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
-    }
-
-    @Test
-    public void shouldThrowException_whenCalculateFareBikeWithFutureInTime() {
-        inTime.setTime(currentTimeMillis + (60 * 60 * 1000));
-        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
-        ticket.setParkingSpot(parkingSpot);
-
-        assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
-    }
-
-    @Test
     public void should_calculateFareBike_whenLessThanOneHourParkingTime() {
         inTime.setTime(currentTimeMillis - (45 * 60 * 1000));//45 minutes parking time should give 3/4th parking fare
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.BIKE, false);
@@ -108,7 +86,7 @@ public class FareCalculatorServiceTest {
 
         fareCalculatorService.calculateFare(ticket);
 
-        assertEquals((0.75 * Fare.CAR_RATE_PER_HOUR), ticket.getPrice());
+        assertEquals((1.13), ticket.getPrice());
     }
 
     @Test
@@ -162,5 +140,46 @@ public class FareCalculatorServiceTest {
         fareCalculatorService.calculateFare(ticket);
 
         assertEquals(0.98, ticket.getPrice());
+    }
+
+    @Test
+    public void should_calculateRoundedFareWithDiscount() {
+        inTime.setTime(currentTimeMillis - (45 * 60 * 1000));
+        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
+        ticket.setParkingSpot(parkingSpot);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setDiscount(true);
+
+        fareCalculatorService.calculateFare(ticket);
+
+        assertEquals(1.07, ticket.getPrice());
+    }
+
+    @Test
+    public void should_throwNullPointerException_whenUnknownType() {
+        inTime.setTime(currentTimeMillis - (60 * 60 * 1000));
+        ParkingSpot parkingSpot = new ParkingSpot(1, null, false);
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+        ticket.setParkingSpot(parkingSpot);
+
+        assertThrows(NullPointerException.class, () -> fareCalculatorService.calculateFare(ticket));
+    }
+
+    @Test
+    public void should_throwIllegalArgumentException_FutureInTime() {
+        inTime.setTime(currentTimeMillis + (60 * 60 * 1000));
+        ticket.setInTime(inTime);
+        ticket.setOutTime(outTime);
+
+        assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
+    }
+
+    @Test
+    public void should_throwIllegalArgumentException_whenOutTimeNull() {
+        ticket.setOutTime(null);
+
+        assertThrows(IllegalArgumentException.class, () -> fareCalculatorService.calculateFare(ticket));
     }
 }
