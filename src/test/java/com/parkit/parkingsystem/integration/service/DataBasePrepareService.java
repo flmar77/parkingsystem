@@ -2,10 +2,15 @@ package com.parkit.parkingsystem.integration.service;
 
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public class DataBasePrepareService {
+
+    private static final Logger LOGGER = LogManager.getLogger("DataBasePrepareService");
 
     private final DataBaseTestConfig dataBaseTestConfig;
 
@@ -28,7 +33,12 @@ public class DataBasePrepareService {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            dataBaseTestConfig.closeConnection(connection);
+            try {
+                dataBaseTestConfig.closeConnection(connection);
+            } catch (SQLException e) {
+                LOGGER.error("test database clean failed");
+            }
+
         }
     }
 
@@ -44,7 +54,11 @@ public class DataBasePrepareService {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            dataBaseTestConfig.closeConnection(connection);
+            try {
+                dataBaseTestConfig.closeConnection(connection);
+            } catch (SQLException e) {
+                LOGGER.error("test database set all parking spots not available failed");
+            }
         }
     }
 
