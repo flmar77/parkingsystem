@@ -3,7 +3,6 @@ package com.parkit.parkingsystem.service;
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
-import com.parkit.parkingsystem.model.Credentials;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,8 +21,7 @@ public abstract class InteractiveShell {
         Scanner scanner = new Scanner(System.in);
         InputReaderUtil inputReaderUtil = new InputReaderUtil(scanner);
         CredentialsService credentialsService = new CredentialsService();
-        Credentials credentials = credentialsService.getCredentials();
-        DataBaseConfig dataBaseConfig = new DataBaseConfig(credentials);
+        DataBaseConfig dataBaseConfig = new DataBaseConfig(credentialsService);
         ParkingSpotDAO parkingSpotDAO = new ParkingSpotDAO(dataBaseConfig);
         TicketDAO ticketDAO = new TicketDAO(dataBaseConfig);
         FareCalculatorService fareCalculatorService = new FareCalculatorService();

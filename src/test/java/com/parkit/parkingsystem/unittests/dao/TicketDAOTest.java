@@ -4,7 +4,6 @@ import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
-import com.parkit.parkingsystem.model.Credentials;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.CredentialsService;
@@ -12,7 +11,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,10 +23,9 @@ public class TicketDAOTest {
     private static DataBasePrepareService dataBasePrepareService;
 
     @BeforeAll
-    private static void setUp() throws IOException {
+    private static void setUp() {
         CredentialsService credentialsService = new CredentialsService();
-        Credentials credentials = credentialsService.getCredentials();
-        DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig(credentials);
+        DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig(credentialsService);
         ticketDAO = new TicketDAO(dataBaseTestConfig);
         dataBasePrepareService = new DataBasePrepareService(dataBaseTestConfig);
     }

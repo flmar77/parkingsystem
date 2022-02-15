@@ -1,6 +1,7 @@
 package com.parkit.parkingsystem.config;
 
 import com.parkit.parkingsystem.model.Credentials;
+import com.parkit.parkingsystem.service.CredentialsService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,13 +11,17 @@ public class DataBaseConfig {
 
     private static final Logger LOGGER = LogManager.getLogger("DataBaseConfig");
 
-    protected final Credentials credentials;
+    protected final CredentialsService credentialsService;
 
-    public DataBaseConfig(Credentials credentials) {
-        this.credentials = credentials;
+    public DataBaseConfig(CredentialsService credentialsService) {
+        this.credentialsService = credentialsService;
     }
 
     public Connection getConnection() throws Exception {
+        Credentials credentials = credentialsService.getCredentials();
+        if (credentials == null) {
+            throw new Exception("can't connect to database : error while getting credentials");
+        }
         LOGGER.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
