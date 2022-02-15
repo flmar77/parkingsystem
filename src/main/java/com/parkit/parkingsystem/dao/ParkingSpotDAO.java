@@ -1,15 +1,14 @@
 package com.parkit.parkingsystem.dao;
 
 import com.parkit.parkingsystem.config.DataBaseConfig;
+import com.parkit.parkingsystem.constants.CustomMessages;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 public class ParkingSpotDAO {
 
@@ -21,7 +20,7 @@ public class ParkingSpotDAO {
         this.dataBaseConfig = dataBaseConfig;
     }
 
-    public int getNextAvailableSlot(final ParkingType parkingType) throws Exception {
+    public int getNextAvailableSlot(final ParkingType parkingType) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -34,36 +33,48 @@ public class ParkingSpotDAO {
             if (rs.next()) {
                 result = rs.getInt(1);
             }
-        } catch (Exception ex) {
-            LOGGER.error("Error fetching next available slot", ex);
-            throw ex;
+        } catch (SQLTimeoutException e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_TIMEOUT_ERROR, e);
+        } catch (SQLException e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
+        } catch (Exception e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            dataBaseConfig.closeResultSet(rs);
-            dataBaseConfig.closePreparedStatement(ps);
-            dataBaseConfig.closeConnection(con);
+            try {
+                dataBaseConfig.closeResultSet(rs);
+                dataBaseConfig.closePreparedStatement(ps);
+                dataBaseConfig.closeConnection(con);
+            } catch (SQLException e) {
+                LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
+            }
         }
         return result;
     }
 
-    public boolean updateParking(final ParkingSpot parkingSpot) throws Exception {
-        //update the availability fo that parking slot
+    public boolean updateParking(final ParkingSpot parkingSpot) {
         Connection con = null;
         PreparedStatement ps = null;
-        boolean result;
+        boolean result = false;
         try {
             con = dataBaseConfig.getConnection();
             ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
             ps.setBoolean(1, parkingSpot.getIsAvailable());
             ps.setInt(2, parkingSpot.getId());
             result = (ps.executeUpdate() == 1);
-        } catch (Exception ex) {
-            LOGGER.error("Error updating parking info", ex);
-            throw ex;
+        } catch (SQLTimeoutException e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_TIMEOUT_ERROR, e);
+        } catch (SQLException e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
+        } catch (Exception e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            dataBaseConfig.closePreparedStatement(ps);
-            dataBaseConfig.closeConnection(con);
+            try {
+                dataBaseConfig.closePreparedStatement(ps);
+                dataBaseConfig.closeConnection(con);
+            } catch (SQLException e) {
+                LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
+            }
         }
         return result;
     }
-
 }

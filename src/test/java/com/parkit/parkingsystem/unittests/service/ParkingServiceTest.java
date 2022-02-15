@@ -14,7 +14,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.SQLException;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -98,7 +97,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void should_throwException_WhenProcessIncomingVehicleAndParkingSpotDAOReturnsWrongParkingNumber() throws Exception {
+    public void should_throwException_WhenProcessIncomingVehicleAndParkingSpotDAOReturnsWrongParkingNumber() {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(-1);
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
@@ -112,15 +111,6 @@ public class ParkingServiceTest {
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
         assertThrows(IllegalArgumentException.class, () -> parkingService.processIncomingVehicle());
-    }
-
-    @Test
-    public void should_throwSQLException_WhenProcessIncomingVehicleAndParkingSpotDAOThrowsSQLException() throws Exception {
-        when(inputReaderUtil.readSelection()).thenReturn(2);
-        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenThrow(SQLException.class);
-        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
-
-        assertThrows(SQLException.class, () -> parkingService.processIncomingVehicle());
     }
 
     @Test

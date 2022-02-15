@@ -38,26 +38,26 @@ public class ParkingSpotDAOTest {
     }
 
     @Test
-    public void should_returnFirstSpot_whenGetNextAvailableSlot() throws Exception {
+    public void should_returnFirstSpot_whenGetNextAvailableSlot() {
         assertEquals(1, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR));
     }
 
     @Test
-    public void should_return0_whenNoAvailableSlot() throws Exception {
+    public void should_return0_whenNoAvailableSlot() {
         dataBasePrepareService.setAllParkingSpotNotAvailable();
 
         assertEquals(0, parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR));
     }
 
     @Test
-    public void should_returnTrue_whenUpdateParkingFromAvailableToNotAvailable() throws Exception {
+    public void should_returnTrue_whenUpdateParkingFromAvailableToNotAvailable() {
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
 
         assertTrue(parkingSpotDAO.updateParking(parkingSpot));
     }
 
     @Test
-    public void should_returnFalse_whenUpdateParkingOfNonExistentParkingNumber() throws Exception {
+    public void should_returnFalse_whenUpdateParkingOfNonExistentParkingNumber() {
         ParkingSpot parkingSpot = new ParkingSpot(6, ParkingType.CAR, true);
 
         assertFalse(parkingSpotDAO.updateParking(parkingSpot));
