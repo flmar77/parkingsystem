@@ -34,6 +34,8 @@ public abstract class InteractiveShell {
             loadMenu();
             int option = inputReaderUtil.readSelection();
             switch (option) {
+                case -1:
+                    break;
                 case 1:
                     parkingService.processIncomingVehicle();
                     break;

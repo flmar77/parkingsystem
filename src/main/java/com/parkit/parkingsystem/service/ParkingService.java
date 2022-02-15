@@ -61,9 +61,13 @@ public class ParkingService {
         }
     }
 
-    private String getVehicleRegNumber() throws RuntimeException {
+    private String getVehicleRegNumber() {
+        String result = null;
         System.out.println("Please type the vehicle registration number and press enter key");
-        return inputReaderUtil.readVehicleRegistrationNumber();
+        while (result == null) {
+            result = inputReaderUtil.readVehicleRegistrationNumber();
+        }
+        return result;
     }
 
     private ParkingSpot getNextParkingNumberIfAvailable() throws Exception {

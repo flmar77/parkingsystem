@@ -80,7 +80,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void should_throwException_whenGetNoCurrentTicket() throws Exception {
+    public void should_returnNull_whenGetNoCurrentTicket() throws Exception {
         long currentTimeMillis = System.currentTimeMillis();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
         Ticket ticket = new Ticket();
@@ -93,7 +93,7 @@ public class TicketDAOTest {
         ticket.setDiscount(false);
         ticketDAO.saveTicket(ticket);
 
-        assertThrows(Exception.class, () -> ticketDAO.getCurrentTicket("ABCDEF"));
+        assertThat(ticketDAO.getCurrentTicket("ABCDEF")).isNull();
     }
 
     @Test

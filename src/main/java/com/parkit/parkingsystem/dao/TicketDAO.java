@@ -53,7 +53,7 @@ public class TicketDAO {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        Ticket ticket;
+        Ticket ticket = null;
         try {
             con = dataBaseConfig.getConnection();
             ps = con.prepareStatement(DBConstants.GET_CURRENT_TICKET);
@@ -70,8 +70,6 @@ public class TicketDAO {
                 ticket.setInTime(rs.getTimestamp(4));
                 ticket.setOutTime(rs.getTimestamp(5));
                 ticket.setDiscount(rs.getBoolean(6));
-            } else {
-                throw new Exception("Error Getting current ticket");
             }
         } catch (Exception ex) {
             LOGGER.error("Error Getting current ticket", ex);
