@@ -3,6 +3,7 @@ package com.parkit.parkingsystem.service;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
+import com.parkit.parkingsystem.exceptions.FareCalculatorException;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.util.InputReaderUtil;
@@ -130,6 +131,9 @@ public class ParkingService {
                 System.out.println("Unable to update ticket information. Error occurred");
                 throw new Exception("Unable to update ticket information. Error occurred");
             }
+        } catch (FareCalculatorException e) {
+            LOGGER.error("Unable to calculate fare", e);
+            throw e;
         } catch (Exception e) {
             LOGGER.error("Unable to process exiting vehicle", e);
             throw e;
