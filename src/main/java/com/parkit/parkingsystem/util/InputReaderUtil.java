@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem.util;
 
+import com.parkit.parkingsystem.constants.CustomMessages;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,8 +25,8 @@ public class InputReaderUtil {
             LOGGER.error("Error while reading user int input from Shell", e);
             System.out.println("Error reading input. Please enter valid number for proceeding further");
         } catch (NoSuchElementException | IllegalStateException e) {
-            LOGGER.error("Error while using scanner", e);
-            System.out.println("Error system : please retry in a few minutes");
+            LOGGER.error(CustomMessages.MESSAGE_LOG_SCAN_ERROR, e);
+            System.out.println(CustomMessages.MESSAGE_USER_SYSTEM_ERROR);
         }
         return result;
 
@@ -40,8 +41,8 @@ public class InputReaderUtil {
             }
             result = vehicleRegNumber;
         } catch (NoSuchElementException | IllegalStateException e) {
-            LOGGER.error("Error while using scanner", e);
-            System.out.println("Error system : please retry in a few minutes");
+            LOGGER.error(CustomMessages.MESSAGE_LOG_SCAN_ERROR, e);
+            System.out.println(CustomMessages.MESSAGE_USER_SYSTEM_ERROR);
         } catch (IllegalArgumentException e) {
             LOGGER.error("Error while reading user vehicleRegNumber input from Shell", e);
             System.out.println("Error reading input. Please enter a valid string for vehicle registration number");

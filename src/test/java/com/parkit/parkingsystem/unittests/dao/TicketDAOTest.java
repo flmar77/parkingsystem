@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TicketDAOTest {
@@ -39,7 +39,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void should_returnTrue_whenSaveValidTicket() throws Exception {
+    public void should_returnTrue_whenSaveValidTicket() {
         long currentTimeMillis = System.currentTimeMillis();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
         Ticket ticket = new Ticket();
@@ -55,15 +55,15 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void should_throwException_whenSaveNullTicket() {
+    public void should_returnFalse_whenSaveNullTicket() {
         Ticket ticket = new Ticket();
 
-        assertThrows(Exception.class, () -> ticketDAO.saveTicket(ticket));
+        assertFalse(ticketDAO.saveTicket(ticket));
 
     }
 
     @Test
-    public void should_returnTicket_whenGetCurrentTicket() throws Exception {
+    public void should_returnTicket_whenGetCurrentTicket() {
         long currentTimeMillis = System.currentTimeMillis();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
         Ticket ticket = new Ticket();
@@ -80,7 +80,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void should_returnNull_whenGetNoCurrentTicket() throws Exception {
+    public void should_returnNull_whenGetNoCurrentTicket() {
         long currentTimeMillis = System.currentTimeMillis();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
         Ticket ticket = new Ticket();
@@ -97,7 +97,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void should_returnTrue_whenUpdateExistentTicket() throws Exception {
+    public void should_returnTrue_whenUpdateExistentTicket() {
         long currentTimeMillis = System.currentTimeMillis();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
         Ticket ticket = new Ticket();
@@ -116,7 +116,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void should_returnFalse_whenUpdateNonExistentTicket() throws Exception {
+    public void should_returnFalse_whenUpdateNonExistentTicket() {
         long currentTimeMillis = System.currentTimeMillis();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
         Ticket ticket = new Ticket();
@@ -132,7 +132,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void should_returnTrue_whenSearchVehicleRegNumberOfRecurringUser() throws Exception {
+    public void should_returnTrue_whenSearchVehicleRegNumberOfRecurringUser() {
         long currentTimeMillis = System.currentTimeMillis();
         ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, true);
         Ticket ticket = new Ticket();
@@ -149,7 +149,7 @@ public class TicketDAOTest {
     }
 
     @Test
-    public void should_returnFalse_whenSearchVehicleRegNumberOfNoRecurringUser() throws Exception {
+    public void should_returnFalse_whenSearchVehicleRegNumberOfNoRecurringUser() {
 
         assertThat(ticketDAO.searchVehicleRegNumber("ABCDEF")).isFalse();
     }

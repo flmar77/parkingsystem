@@ -50,10 +50,13 @@ public class ParkingService {
                 ticket.setDiscount(false);
             }
 
-            ticketDAO.saveTicket(ticket);
-            System.out.println("Generated Ticket and saved in DB");
-            System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
-            System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
+            if (ticketDAO.saveTicket(ticket)) {
+                System.out.println("Generated Ticket and saved in DB");
+                System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
+                System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
+            } else {
+                throw new Exception("Unable to save ticket");
+            }
 
         } catch (Exception ex) {
             LOGGER.error("Unable to process incoming vehicle", ex);
@@ -111,6 +114,9 @@ public class ParkingService {
         try {
             String vehicleRegNumber = getVehicleRegNumber();
             Ticket ticket = ticketDAO.getCurrentTicket(vehicleRegNumber);
+            if (ticket == null) {
+                throw new Exception("Unable to get current ticket");
+            }
             Date outTime = new Date();
             ticket.setOutTime(outTime);
             fareCalculatorService.calculateFare(ticket);
