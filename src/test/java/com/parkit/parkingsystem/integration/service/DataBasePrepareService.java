@@ -1,7 +1,7 @@
 package com.parkit.parkingsystem.integration.service;
 
 import com.parkit.parkingsystem.constants.DBConstants;
-import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
+import com.parkit.parkingsystem.service.DataBaseService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,17 +12,17 @@ public class DataBasePrepareService {
 
     private static final Logger LOGGER = LogManager.getLogger("DataBasePrepareService");
 
-    private final DataBaseTestConfig dataBaseTestConfig;
+    private final DataBaseService dataBaseService;
 
-    public DataBasePrepareService(DataBaseTestConfig dataBaseTestConfig) {
-        this.dataBaseTestConfig = dataBaseTestConfig;
+    public DataBasePrepareService(DataBaseService dataBaseService) {
+        this.dataBaseService = dataBaseService;
     }
 
     public void clearDataBaseEntries() {
 
         Connection connection = null;
         try {
-            connection = dataBaseTestConfig.getConnection();
+            connection = dataBaseService.getConnection();
 
             //set parking entries to available
             connection.prepareStatement(DBConstants.CLEAN_TEST_PARKING).execute();
@@ -34,7 +34,7 @@ public class DataBasePrepareService {
             e.printStackTrace();
         } finally {
             try {
-                dataBaseTestConfig.closeConnection(connection);
+                dataBaseService.closeConnection(connection);
             } catch (SQLException e) {
                 LOGGER.error("test database clean failed");
             }
@@ -46,7 +46,7 @@ public class DataBasePrepareService {
 
         Connection connection = null;
         try {
-            connection = dataBaseTestConfig.getConnection();
+            connection = dataBaseService.getConnection();
 
             //set parking entries to not available
             connection.prepareStatement(DBConstants.SET_PARKING_NOT_AVAILABLE).execute();
@@ -55,7 +55,7 @@ public class DataBasePrepareService {
             e.printStackTrace();
         } finally {
             try {
-                dataBaseTestConfig.closeConnection(connection);
+                dataBaseService.closeConnection(connection);
             } catch (SQLException e) {
                 LOGGER.error("test database set all parking spots not available failed");
             }

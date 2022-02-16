@@ -2,10 +2,10 @@ package com.parkit.parkingsystem.unittests.dao;
 
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
-import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
 import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
 import com.parkit.parkingsystem.model.ParkingSpot;
-import com.parkit.parkingsystem.service.CredentialsService;
+import com.parkit.parkingsystem.service.DataBaseConfigService;
+import com.parkit.parkingsystem.service.DataBaseService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,15 +17,17 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class ParkingSpotDAOTest {
 
+    private static final String DATABASE_CONFIG_FILEPATH = "src/main/java/com/parkit/parkingsystem/config/dataBaseConfigTest.properties";
+
     private static ParkingSpotDAO parkingSpotDAO;
     private static DataBasePrepareService dataBasePrepareService;
 
     @BeforeAll
     private static void setUp() {
-        CredentialsService credentialsService = new CredentialsService();
-        DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig(credentialsService);
-        parkingSpotDAO = new ParkingSpotDAO(dataBaseTestConfig);
-        dataBasePrepareService = new DataBasePrepareService(dataBaseTestConfig);
+        DataBaseConfigService dataBaseTestConfigService = new DataBaseConfigService(DATABASE_CONFIG_FILEPATH);
+        DataBaseService dataBaseTestService = new DataBaseService(dataBaseTestConfigService.getDataBaseConfig());
+        parkingSpotDAO = new ParkingSpotDAO(dataBaseTestService);
+        dataBasePrepareService = new DataBasePrepareService(dataBaseTestService);
     }
 
     @BeforeEach

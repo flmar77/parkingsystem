@@ -10,8 +10,8 @@ public abstract class App {
     private static final Logger LOGGER = LogManager.getLogger("App");
 
     public static void main(final String[] args) {
+        LOGGER.info("Initializing Parking System App");
         try {
-            LOGGER.info("Initializing Parking System App");
             ParkingInterface.loadInterface();
         } catch (ParkingServiceException e) {
             LOGGER.error("Unable to process App because of parking service exception ", e);

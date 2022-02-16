@@ -1,10 +1,10 @@
 package com.parkit.parkingsystem.dao;
 
-import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.CustomMessages;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
+import com.parkit.parkingsystem.service.DataBaseService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,10 +14,10 @@ public class ParkingSpotDAO {
 
     private static final Logger LOGGER = LogManager.getLogger("ParkingSpotDAO");
 
-    private final DataBaseConfig dataBaseConfig;
+    private final DataBaseService dataBaseService;
 
-    public ParkingSpotDAO(final DataBaseConfig dataBaseConfig) {
-        this.dataBaseConfig = dataBaseConfig;
+    public ParkingSpotDAO(final DataBaseService dataBaseService) {
+        this.dataBaseService = dataBaseService;
     }
 
     public int getNextAvailableSlot(final ParkingType parkingType) {
@@ -26,7 +26,7 @@ public class ParkingSpotDAO {
         ResultSet rs = null;
         int result = -1;
         try {
-            con = dataBaseConfig.getConnection();
+            con = dataBaseService.getConnection();
             ps = con.prepareStatement(DBConstants.GET_NEXT_PARKING_SPOT);
             ps.setString(1, parkingType.toString());
             rs = ps.executeQuery();
@@ -41,9 +41,9 @@ public class ParkingSpotDAO {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
             try {
-                dataBaseConfig.closeResultSet(rs);
-                dataBaseConfig.closePreparedStatement(ps);
-                dataBaseConfig.closeConnection(con);
+                dataBaseService.closeResultSet(rs);
+                dataBaseService.closePreparedStatement(ps);
+                dataBaseService.closeConnection(con);
             } catch (SQLException e) {
                 LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
             }
@@ -56,7 +56,7 @@ public class ParkingSpotDAO {
         PreparedStatement ps = null;
         boolean result = false;
         try {
-            con = dataBaseConfig.getConnection();
+            con = dataBaseService.getConnection();
             ps = con.prepareStatement(DBConstants.UPDATE_PARKING_SPOT);
             ps.setBoolean(1, parkingSpot.getIsAvailable());
             ps.setInt(2, parkingSpot.getId());
@@ -69,8 +69,8 @@ public class ParkingSpotDAO {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
             try {
-                dataBaseConfig.closePreparedStatement(ps);
-                dataBaseConfig.closeConnection(con);
+                dataBaseService.closePreparedStatement(ps);
+                dataBaseService.closeConnection(con);
             } catch (SQLException e) {
                 LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
             }

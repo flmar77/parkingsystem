@@ -1,31 +1,29 @@
-package com.parkit.parkingsystem.config;
+package com.parkit.parkingsystem.service;
 
-import com.parkit.parkingsystem.model.Credentials;
-import com.parkit.parkingsystem.service.CredentialsService;
+import com.parkit.parkingsystem.model.DataBaseConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.sql.*;
 
-public class DataBaseConfig {
+public class DataBaseService {
 
-    private static final Logger LOGGER = LogManager.getLogger("DataBaseConfig");
+    private static final Logger LOGGER = LogManager.getLogger("DataBaseService");
 
-    protected final CredentialsService credentialsService;
+    private final DataBaseConfig dataBaseConfig;
 
-    public DataBaseConfig(CredentialsService credentialsService) {
-        this.credentialsService = credentialsService;
+    public DataBaseService(DataBaseConfig dataBaseConfig) {
+        this.dataBaseConfig = dataBaseConfig;
     }
 
     public Connection getConnection() throws Exception {
-        Credentials credentials = credentialsService.getCredentials();
-        if (credentials == null) {
-            throw new Exception("can't connect to database : error while getting credentials");
+        if (dataBaseConfig == null) {
+            throw new Exception("can't connect to database : error while getting dataBaseConfig");
         }
         LOGGER.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/prod?zeroDateTimeBehavior=CONVERT_TO_NULL&serverTimezone=UTC", credentials.getDatasourceUsername(), credentials.getDatasourcePassword());
+                dataBaseConfig.getDataBaseUrl(), dataBaseConfig.getDataBaseUsername(), dataBaseConfig.getDataBasePassword());
     }
 
     public void closeConnection(final Connection con) throws SQLException {

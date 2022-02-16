@@ -1,11 +1,11 @@
 package com.parkit.parkingsystem.dao;
 
-import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.CustomMessages;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
+import com.parkit.parkingsystem.service.DataBaseService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,10 +15,10 @@ public class TicketDAO {
 
     private static final Logger LOGGER = LogManager.getLogger("TicketDAO");
 
-    private final DataBaseConfig dataBaseConfig;
+    private final DataBaseService dataBaseService;
 
-    public TicketDAO(final DataBaseConfig dataBaseConfig) {
-        this.dataBaseConfig = dataBaseConfig;
+    public TicketDAO(final DataBaseService dataBaseService) {
+        this.dataBaseService = dataBaseService;
     }
 
     public boolean saveTicket(final Ticket ticket) {
@@ -26,7 +26,7 @@ public class TicketDAO {
         PreparedStatement ps = null;
         boolean result = false;
         try {
-            con = dataBaseConfig.getConnection();
+            con = dataBaseService.getConnection();
             ps = con.prepareStatement(DBConstants.SAVE_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, DISCOUNT)
             //ps.setInt(1,ticket.getId());
@@ -45,8 +45,8 @@ public class TicketDAO {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
             try {
-                dataBaseConfig.closePreparedStatement(ps);
-                dataBaseConfig.closeConnection(con);
+                dataBaseService.closePreparedStatement(ps);
+                dataBaseService.closeConnection(con);
             } catch (SQLException e) {
                 LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
             }
@@ -60,7 +60,7 @@ public class TicketDAO {
         ResultSet rs = null;
         Ticket ticket = null;
         try {
-            con = dataBaseConfig.getConnection();
+            con = dataBaseService.getConnection();
             ps = con.prepareStatement(DBConstants.GET_CURRENT_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, DISCOUNT)
             ps.setString(1, vehicleRegNumber);
@@ -86,9 +86,9 @@ public class TicketDAO {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
             try {
-                dataBaseConfig.closeResultSet(rs);
-                dataBaseConfig.closePreparedStatement(ps);
-                dataBaseConfig.closeConnection(con);
+                dataBaseService.closeResultSet(rs);
+                dataBaseService.closePreparedStatement(ps);
+                dataBaseService.closeConnection(con);
             } catch (SQLException e) {
                 LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
             }
@@ -101,7 +101,7 @@ public class TicketDAO {
         PreparedStatement ps = null;
         boolean result = false;
         try {
-            con = dataBaseConfig.getConnection();
+            con = dataBaseService.getConnection();
             ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
             ps.setDouble(1, ticket.getPrice());
             ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
@@ -115,8 +115,8 @@ public class TicketDAO {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
             try {
-                dataBaseConfig.closePreparedStatement(ps);
-                dataBaseConfig.closeConnection(con);
+                dataBaseService.closePreparedStatement(ps);
+                dataBaseService.closeConnection(con);
             } catch (SQLException e) {
                 LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
             }
@@ -130,7 +130,7 @@ public class TicketDAO {
         ResultSet rs = null;
         boolean result = false;
         try {
-            con = dataBaseConfig.getConnection();
+            con = dataBaseService.getConnection();
             ps = con.prepareStatement(DBConstants.SEARCH_VEHICLE_REG_NUMBER);
             ps.setString(1, vehicleRegNumber);
             rs = ps.executeQuery();
@@ -143,9 +143,9 @@ public class TicketDAO {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
             try {
-                dataBaseConfig.closeResultSet(rs);
-                dataBaseConfig.closePreparedStatement(ps);
-                dataBaseConfig.closeConnection(con);
+                dataBaseService.closeResultSet(rs);
+                dataBaseService.closePreparedStatement(ps);
+                dataBaseService.closeConnection(con);
             } catch (SQLException e) {
                 LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
             }
