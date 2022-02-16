@@ -58,6 +58,7 @@ public class ParkingServiceTest {
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
         parkingService.processIncomingVehicle();
@@ -72,6 +73,7 @@ public class ParkingServiceTest {
         when(ticketDAO.searchVehicleRegNumber("ABCDEF")).thenReturn(true);
         when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
         parkingService.processIncomingVehicle();
@@ -86,6 +88,7 @@ public class ParkingServiceTest {
         when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
         when(ticketDAO.searchVehicleRegNumber(anyString())).thenReturn(true);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
 
         parkingService.processIncomingVehicle();
@@ -94,23 +97,6 @@ public class ParkingServiceTest {
             assertThat(ticket.getDiscount()).isTrue();
             return true;
         }));
-    }
-
-    @Test
-    public void should_throwException_WhenProcessIncomingVehicleAndParkingSpotDAOReturnsWrongParkingNumber() {
-        when(inputReaderUtil.readSelection()).thenReturn(1);
-        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(-1);
-        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
-
-        assertThrows(Exception.class, () -> parkingService.processIncomingVehicle());
-    }
-
-    @Test
-    public void should_throwIllegalArgumentException_WhenProcessIncomingVehicleAndWrongVehicleType() {
-        when(inputReaderUtil.readSelection()).thenReturn(3);
-        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
-
-        assertThrows(IllegalArgumentException.class, () -> parkingService.processIncomingVehicle());
     }
 
     @Test

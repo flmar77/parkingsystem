@@ -22,7 +22,6 @@ public class InputReaderUtil {
         try {
             result = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
-            LOGGER.error("Error while reading user int input from Shell", e);
             System.out.println("Error reading input. Please enter valid number for proceeding further");
         } catch (NoSuchElementException | IllegalStateException e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_SCAN_ERROR, e);
@@ -37,15 +36,13 @@ public class InputReaderUtil {
         try {
             String vehicleRegNumber = scanner.nextLine();
             if (vehicleRegNumber == null || vehicleRegNumber.trim().length() == 0) {
-                throw new IllegalArgumentException("Invalid input provided");
+                System.out.println("Error reading input. Please enter a valid string for vehicle registration number");
+            } else {
+                result = vehicleRegNumber;
             }
-            result = vehicleRegNumber;
         } catch (NoSuchElementException | IllegalStateException e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_SCAN_ERROR, e);
             System.out.println(CustomMessages.MESSAGE_USER_SYSTEM_ERROR);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Error while reading user vehicleRegNumber input from Shell", e);
-            System.out.println("Error reading input. Please enter a valid string for vehicle registration number");
         }
         return result;
     }

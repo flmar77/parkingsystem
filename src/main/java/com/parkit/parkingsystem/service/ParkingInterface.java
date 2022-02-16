@@ -3,18 +3,19 @@ package com.parkit.parkingsystem.service;
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
+import com.parkit.parkingsystem.exceptions.ParkingServiceException;
 import com.parkit.parkingsystem.util.InputReaderUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Scanner;
 
-public abstract class InteractiveShell {
+public abstract class ParkingInterface {
 
-    private static final Logger LOGGER = LogManager.getLogger("InteractiveShell");
+    private static final Logger LOGGER = LogManager.getLogger("ParkingInterface");
 
-    public static void loadInterface() throws Exception {
-        LOGGER.info("App initialized!!!");
+    public static void loadInterface() throws ParkingServiceException {
+        LOGGER.info("Interface initialized!!!");
         System.out.println("Welcome to Parking System!");
 
         boolean continueApp = true;
