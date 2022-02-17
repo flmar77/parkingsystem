@@ -8,11 +8,14 @@ import com.parkit.parkingsystem.service.DataBaseService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ParkingSpotDAO {
 
-    private static final Logger LOGGER = LogManager.getLogger("ParkingSpotDAO");
+    private static final Logger LOGGER = LogManager.getLogger(ParkingSpotDAO.class);
 
     private final DataBaseService dataBaseService;
 
@@ -33,8 +36,6 @@ public class ParkingSpotDAO {
             if (rs.next()) {
                 result = rs.getInt(1);
             }
-        } catch (SQLTimeoutException e) {
-            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_TIMEOUT_ERROR, e);
         } catch (SQLException e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
         } catch (Exception e) {
@@ -61,8 +62,6 @@ public class ParkingSpotDAO {
             ps.setBoolean(1, parkingSpot.getIsAvailable());
             ps.setInt(2, parkingSpot.getId());
             result = (ps.executeUpdate() == 1);
-        } catch (SQLTimeoutException e) {
-            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_TIMEOUT_ERROR, e);
         } catch (SQLException e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
         } catch (Exception e) {

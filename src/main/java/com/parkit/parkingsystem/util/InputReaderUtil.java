@@ -22,6 +22,7 @@ public class InputReaderUtil {
         try {
             result = Integer.parseInt(scanner.nextLine());
         } catch (NumberFormatException e) {
+            // TODO : catch vide + laisser à l'appelant l'affichage de l'erreur
             System.out.println("Error reading input. Please enter valid number for proceeding further");
         } catch (NoSuchElementException | IllegalStateException e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_SCAN_ERROR, e);

@@ -1,12 +1,15 @@
 package com.parkit.parkingsystem.unittests.dao;
 
+import com.parkit.parkingsystem.constants.CustomMessages;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.TicketDAO;
-import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
+import com.parkit.parkingsystem.helper.DataBasePrepareService;
+import com.parkit.parkingsystem.model.DataBaseConfig;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.DataBaseConfigService;
 import com.parkit.parkingsystem.service.DataBaseService;
+import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -152,4 +155,93 @@ public class TicketDAOTest {
 
         assertThat(ticketDAO.searchVehicleRegNumber("ABCDEF")).isFalse();
     }
+
+    @Test
+    public void should_LogErrorOnSQLException_whenSaveTicketAndGetConnectionWithWrongDatabaseConfig() {
+        DataBaseService dataBaseServiceFake = new DataBaseService(new DataBaseConfig("x", "y", "z"));
+        TicketDAO ticketDAOFake = new TicketDAO(dataBaseServiceFake);
+        LogCaptor logCaptor = LogCaptor.forClass(TicketDAO.class);
+
+        ticketDAOFake.saveTicket(null);
+
+        assertThat(logCaptor.getErrorLogs()).containsExactly(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR);
+    }
+
+    @Test
+    public void should_LogErrorOnException_whenSaveTicketAndGetConnectionWithNullDatabaseConfig() {
+        DataBaseService dataBaseServiceFake = new DataBaseService(null);
+        TicketDAO ticketDAOFake = new TicketDAO(dataBaseServiceFake);
+        LogCaptor logCaptor = LogCaptor.forClass(TicketDAO.class);
+
+        ticketDAOFake.saveTicket(null);
+
+        assertThat(logCaptor.getErrorLogs()).containsExactly(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR);
+    }
+
+    @Test
+    public void should_LogErrorOnSQLException_whenGetCurrentTicketAndGetConnectionWithWrongDatabaseConfig() {
+        DataBaseService dataBaseServiceFake = new DataBaseService(new DataBaseConfig("x", "y", "z"));
+        TicketDAO ticketDAOFake = new TicketDAO(dataBaseServiceFake);
+        LogCaptor logCaptor = LogCaptor.forClass(TicketDAO.class);
+
+        ticketDAOFake.getCurrentTicket("ABCDEF");
+
+        assertThat(logCaptor.getErrorLogs()).containsExactly(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR);
+    }
+
+    @Test
+    public void should_LogErrorOnException_whenGetCurrentTicketAndGetConnectionWithNullDatabaseConfig() {
+        DataBaseService dataBaseServiceFake = new DataBaseService(null);
+        TicketDAO ticketDAOFake = new TicketDAO(dataBaseServiceFake);
+        LogCaptor logCaptor = LogCaptor.forClass(TicketDAO.class);
+
+        ticketDAOFake.getCurrentTicket("ABCDEF");
+
+        assertThat(logCaptor.getErrorLogs()).containsExactly(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR);
+    }
+
+    @Test
+    public void should_LogErrorOnSQLException_whenUpdateTicketAndGetConnectionWithWrongDatabaseConfig() {
+        DataBaseService dataBaseServiceFake = new DataBaseService(new DataBaseConfig("x", "y", "z"));
+        TicketDAO ticketDAOFake = new TicketDAO(dataBaseServiceFake);
+        LogCaptor logCaptor = LogCaptor.forClass(TicketDAO.class);
+
+        ticketDAOFake.updateTicket(null);
+
+        assertThat(logCaptor.getErrorLogs()).containsExactly(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR);
+    }
+
+    @Test
+    public void should_LogErrorOnException_whenUpdateTicketAndGetConnectionWithNullDatabaseConfig() {
+        DataBaseService dataBaseServiceFake = new DataBaseService(null);
+        TicketDAO ticketDAOFake = new TicketDAO(dataBaseServiceFake);
+        LogCaptor logCaptor = LogCaptor.forClass(TicketDAO.class);
+
+        ticketDAOFake.updateTicket(null);
+
+        assertThat(logCaptor.getErrorLogs()).containsExactly(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR);
+    }
+
+    @Test
+    public void should_LogErrorOnSQLException_whenSearchVehicleRegNumberAndGetConnectionWithWrongDatabaseConfig() {
+        DataBaseService dataBaseServiceFake = new DataBaseService(new DataBaseConfig("x", "y", "z"));
+        TicketDAO ticketDAOFake = new TicketDAO(dataBaseServiceFake);
+        LogCaptor logCaptor = LogCaptor.forClass(TicketDAO.class);
+
+        ticketDAOFake.searchVehicleRegNumber("ABCDEF");
+
+        assertThat(logCaptor.getErrorLogs()).containsExactly(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR);
+    }
+
+    @Test
+    public void should_LogErrorOnException_whenSearchVehicleRegNumberAndGetConnectionWithNullDatabaseConfig() {
+        DataBaseService dataBaseServiceFake = new DataBaseService(null);
+        TicketDAO ticketDAOFake = new TicketDAO(dataBaseServiceFake);
+        LogCaptor logCaptor = LogCaptor.forClass(TicketDAO.class);
+
+        ticketDAOFake.searchVehicleRegNumber("ABCDEF");
+
+        assertThat(logCaptor.getErrorLogs()).containsExactly(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR);
+    }
+
 }

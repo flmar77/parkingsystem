@@ -3,6 +3,8 @@ package com.parkit.parkingsystem.unittests.service;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
+import com.parkit.parkingsystem.exceptions.FareCalculatorException;
+import com.parkit.parkingsystem.exceptions.ParkingServiceException;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.FareCalculatorService;
@@ -35,25 +37,7 @@ public class ParkingServiceTest {
     private static FareCalculatorService fareCalculatorService;
 
     @Test
-    public void should_updateParkingSpot_WhenExitingVehicle() throws Exception {
-        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
-        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
-        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
-        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-        Ticket ticket = new Ticket();
-        ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
-        ticket.setParkingSpot(parkingSpot);
-        ticket.setVehicleRegNumber("ABCDEF");
-        when(ticketDAO.getCurrentTicket(anyString())).thenReturn(ticket);
-
-        parkingService.processExitingVehicle();
-
-        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
-    }
-
-    @Test
-    public void should_saveTicket_WhenProcessIncomingVehicle() throws Exception {
+    public void should_saveTicket_WhenIncomingVehicle() throws Exception {
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
@@ -67,9 +51,9 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void should_searchVehicleRegNumber_WhenProcessIncomingVehicle() throws Exception {
+    public void should_searchVehicleRegNumber_WhenIncomingVehicle() throws Exception {
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readSelection()).thenReturn(2);
         when(ticketDAO.searchVehicleRegNumber("ABCDEF")).thenReturn(true);
         when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
         when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
@@ -82,7 +66,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void should_saveTicketWithDiscount_WhenProcessIncomingVehicleAndRecurringUsers() throws Exception {
+    public void should_saveTicketWithDiscount_WhenIncomingVehicleAndRecurringUsers() throws Exception {
         when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         when(inputReaderUtil.readSelection()).thenReturn(1);
         when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(true);
@@ -100,18 +84,105 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void should_throwException_WhenProcessExitingVehicleAndTicketDAOReturnFalse() {
-        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
-        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
+    public void should_throwParkingServiceException_WhenIncomingVehicleAndParkingNumberUnavailable() {
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(0);
         parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
-        ParkingSpot parkingSpot = new ParkingSpot(1, ParkingType.CAR, false);
-        Ticket ticket = new Ticket();
-        ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
-        ticket.setParkingSpot(parkingSpot);
-        ticket.setVehicleRegNumber("ABCDEF");
-        when(ticketDAO.getCurrentTicket(anyString())).thenReturn(ticket);
 
-        assertThrows(Exception.class, () -> parkingService.processExitingVehicle());
+        assertThrows(ParkingServiceException.class, () -> parkingService.processIncomingVehicle());
+
     }
 
+    @Test
+    public void should_throwParkingServiceException_WhenIncomingVehicleAndParkingSpotDAOFails() {
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(false);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
+
+        assertThrows(ParkingServiceException.class, () -> parkingService.processIncomingVehicle());
+
+    }
+
+    @Test
+    public void should_throwParkingServiceException_WhenIncomingVehicleAndTicketDAOFails() {
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(ticketDAO.saveTicket(any(Ticket.class))).thenReturn(false);
+        when(parkingSpotDAO.getNextAvailableSlot(any(ParkingType.class))).thenReturn(1);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
+
+        assertThrows(ParkingServiceException.class, () -> parkingService.processIncomingVehicle());
+    }
+
+    @Test
+    public void should_updateParkingSpot_WhenExitingVehicle() throws Exception {
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        Ticket ticket = new Ticket();
+        ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
+        ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
+        ticket.setVehicleRegNumber("ABCDEF");
+        when(ticketDAO.getCurrentTicket(anyString())).thenReturn(ticket);
+        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(true);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
+
+        parkingService.processExitingVehicle();
+
+        verify(parkingSpotDAO, Mockito.times(1)).updateParking(any(ParkingSpot.class));
+    }
+
+    @Test
+    public void should_throwParkingServiceException_WhenExitingVehicleAndGetNullTicket() {
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        when(ticketDAO.getCurrentTicket(anyString())).thenReturn(null);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
+
+        assertThrows(ParkingServiceException.class, () -> parkingService.processExitingVehicle());
+    }
+
+    @Test
+    public void should_throwParkingServiceException_WhenExitingVehicleAndUpdateTicketFails() {
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        Ticket ticket = new Ticket();
+        ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
+        ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
+        ticket.setVehicleRegNumber("ABCDEF");
+        when(ticketDAO.getCurrentTicket(anyString())).thenReturn(ticket);
+        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(false);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
+
+        assertThrows(ParkingServiceException.class, () -> parkingService.processExitingVehicle());
+    }
+
+    @Test
+    public void should_throwParkingServiceException_WhenExitingVehicleAndUpdateParkingFails() {
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        Ticket ticket = new Ticket();
+        ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
+        ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
+        ticket.setVehicleRegNumber("ABCDEF");
+        when(ticketDAO.getCurrentTicket(anyString())).thenReturn(ticket);
+        when(ticketDAO.updateTicket(any(Ticket.class))).thenReturn(true);
+        when(parkingSpotDAO.updateParking(any(ParkingSpot.class))).thenReturn(false);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
+
+        assertThrows(ParkingServiceException.class, () -> parkingService.processExitingVehicle());
+    }
+
+    @Test
+    public void should_throwParkingServiceException_WhenFareCalculatorException() throws FareCalculatorException {
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        Ticket ticket = new Ticket();
+        ticket.setInTime(new Date(System.currentTimeMillis() - (60 * 60 * 1000)));
+        ticket.setParkingSpot(new ParkingSpot(1, ParkingType.CAR, false));
+        ticket.setVehicleRegNumber("ABCDEF");
+        when(ticketDAO.getCurrentTicket(anyString())).thenReturn(ticket);
+        doThrow(new FareCalculatorException("")).when(fareCalculatorService).calculateFare(any());
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO, fareCalculatorService);
+
+        assertThrows(ParkingServiceException.class, () -> parkingService.processExitingVehicle());
+    }
 }

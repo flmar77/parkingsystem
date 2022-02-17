@@ -38,7 +38,7 @@ public class FareCalculatorService {
                 discountAppliedRatio = BigDecimal.valueOf(Fare.DISCOUNT_DEFAULT_RATIO);
             }
 
-            BigDecimal ratePerHour;
+            BigDecimal ratePerHour = BigDecimal.valueOf(0);
             switch (ticket.getParkingSpot().getParkingType()) {
                 case CAR:
                     ratePerHour = BigDecimal.valueOf(Fare.CAR_RATE_PER_HOUR);
@@ -46,13 +46,12 @@ public class FareCalculatorService {
                 case BIKE:
                     ratePerHour = BigDecimal.valueOf(Fare.BIKE_RATE_PER_HOUR);
                     break;
-                default:
-                    throw new FareCalculatorException("Error while calculating fare - non-existent parking type");
             }
 
             BigDecimal rawPrice = parkingTimeInHours.multiply(discountAppliedRatio).multiply(ratePerHour);
             BigDecimal RoundedPrice = rawPrice.setScale(2, RoundingMode.HALF_UP);
             ticket.setPrice(RoundedPrice.doubleValue());
+            //TODO : ne gérer que les exceptions pertinentes (que l'API force à gérer)
         } catch (ArithmeticException e) {
             throw new FareCalculatorException("Error while calculating fare - can't calculate something", e);
         } catch (NumberFormatException e) {

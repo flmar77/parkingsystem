@@ -13,6 +13,7 @@ public abstract class ParkingInterface {
 
     private static final Logger LOGGER = LogManager.getLogger("ParkingInterface");
 
+    //TODO : utiliser getClass().getResourceAsStream()
     private static final String DATABASE_CONFIG_FILEPATH = "src/main/java/com/parkit/parkingsystem/config/dataBaseConfigProd.properties";
 
     public static void loadInterface() throws ParkingServiceException {
@@ -20,7 +21,7 @@ public abstract class ParkingInterface {
         System.out.println("Welcome to Parking System!");
 
         boolean continueApp = true;
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in, "UTF-8");
         InputReaderUtil inputReaderUtil = new InputReaderUtil(scanner);
         DataBaseConfigService dataBaseConfigService = new DataBaseConfigService(DATABASE_CONFIG_FILEPATH);
         DataBaseService dataBaseService = new DataBaseService(dataBaseConfigService.getDataBaseConfig());

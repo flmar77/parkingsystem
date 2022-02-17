@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class DataBaseConfigService {
 
-    private static final Logger LOGGER = LogManager.getLogger("DataBaseConfigService");
+    private static final Logger LOGGER = LogManager.getLogger(DataBaseConfigService.class);
 
     private final String databaseConfigPath;
 

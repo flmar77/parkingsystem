@@ -13,7 +13,7 @@ import java.sql.*;
 
 public class TicketDAO {
 
-    private static final Logger LOGGER = LogManager.getLogger("TicketDAO");
+    private static final Logger LOGGER = LogManager.getLogger(TicketDAO.class);
 
     private final DataBaseService dataBaseService;
 
@@ -37,14 +37,13 @@ public class TicketDAO {
             ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
             ps.setBoolean(6, ticket.getDiscount());
             result = (ps.executeUpdate() == 1);
-        } catch (SQLTimeoutException e) {
-            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_TIMEOUT_ERROR, e);
         } catch (SQLException e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
         } catch (Exception e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
             try {
+                //TODO : try/catch à remettre côté DBservice
                 dataBaseService.closePreparedStatement(ps);
                 dataBaseService.closeConnection(con);
             } catch (SQLException e) {
@@ -76,10 +75,6 @@ public class TicketDAO {
                 ticket.setOutTime(rs.getTimestamp(5));
                 ticket.setDiscount(rs.getBoolean(6));
             }
-        } catch (IllegalArgumentException e) {
-            LOGGER.error("Parking type has been corrupted !", e);
-        } catch (SQLTimeoutException e) {
-            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_TIMEOUT_ERROR, e);
         } catch (SQLException e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
         } catch (Exception e) {
@@ -107,8 +102,6 @@ public class TicketDAO {
             ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
             ps.setInt(3, ticket.getId());
             result = ps.executeUpdate() == 1;
-        } catch (SQLTimeoutException e) {
-            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_TIMEOUT_ERROR, e);
         } catch (SQLException e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
         } catch (Exception e) {
@@ -135,8 +128,6 @@ public class TicketDAO {
             ps.setString(1, vehicleRegNumber);
             rs = ps.executeQuery();
             result = rs.next();
-        } catch (SQLTimeoutException e) {
-            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_TIMEOUT_ERROR, e);
         } catch (SQLException e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
         } catch (Exception e) {
