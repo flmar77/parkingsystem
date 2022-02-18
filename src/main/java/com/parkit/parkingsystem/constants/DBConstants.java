@@ -10,7 +10,7 @@ public abstract class DBConstants {
     public static final String GET_CURRENT_TICKET = "select t.PARKING_NUMBER, t.ID, t.PRICE, t.IN_TIME, t.OUT_TIME, t.DISCOUNT, p.TYPE from ticket t,parking p where p.parking_number = t.parking_number and t.VEHICLE_REG_NUMBER=? and t.OUT_TIME IS NULL";
     public static final String SEARCH_VEHICLE_REG_NUMBER = "select t.ID from ticket t where t.VEHICLE_REG_NUMBER=? limit 1";
 
-    public static final String CLEAN_TEST_PARKING = "update parking set available = true";
-    public static final String SET_PARKING_NOT_AVAILABLE = "update parking set available = false";
-    public static final String CLEAN_TEST_TICKET = "truncate table ticket";
+    public static final String TEST_SET_PARKING_AVAILABLE = "update parking set available = true";
+    public static final String TEST_SET_PARKING_NOT_AVAILABLE = "update parking set available = false";
+    public static final String TEST_CLEAN_TICKET = "truncate table ticket";
 }

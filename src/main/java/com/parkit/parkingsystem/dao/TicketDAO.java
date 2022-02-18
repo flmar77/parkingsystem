@@ -1,34 +1,36 @@
 package com.parkit.parkingsystem.dao;
 
-import com.parkit.parkingsystem.config.DataBaseConfig;
+import com.parkit.parkingsystem.constants.CustomMessages;
 import com.parkit.parkingsystem.constants.DBConstants;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
+import com.parkit.parkingsystem.service.DataBaseService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
+import java.sql.*;
 
 public class TicketDAO {
 
-    private static final Logger LOGGER = LogManager.getLogger("TicketDAO");
+    private static final Logger LOGGER = LogManager.getLogger(TicketDAO.class);
 
-    private final DataBaseConfig dataBaseConfig;
+    private final DataBaseService dataBaseService;
 
-    public TicketDAO(final DataBaseConfig dataBaseConfig) {
-        this.dataBaseConfig = dataBaseConfig;
+    public TicketDAO(final DataBaseService dataBaseService) {
+        this.dataBaseService = dataBaseService;
     }
 
-    public boolean saveTicket(final Ticket ticket) throws Exception {
+    /**
+     * @param ticket we want to save
+     * @return true if successfully, else false
+     */
+    public boolean saveTicket(final Ticket ticket) {
         Connection con = null;
         PreparedStatement ps = null;
-        boolean result;
+        boolean result = false;
         try {
-            con = dataBaseConfig.getConnection();
+            con = dataBaseService.getConnection();
             ps = con.prepareStatement(DBConstants.SAVE_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, DISCOUNT)
             //ps.setInt(1,ticket.getId());
@@ -39,23 +41,28 @@ public class TicketDAO {
             ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (new Timestamp(ticket.getOutTime().getTime())));
             ps.setBoolean(6, ticket.getDiscount());
             result = (ps.executeUpdate() == 1);
-        } catch (Exception ex) {
-            LOGGER.error("Error fetching next available slot", ex);
-            throw ex;
+        } catch (SQLException e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
+        } catch (Exception e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            dataBaseConfig.closePreparedStatement(ps);
-            dataBaseConfig.closeConnection(con);
+            dataBaseService.closePreparedStatement(ps);
+            dataBaseService.closeConnection(con);
         }
         return result;
     }
 
-    public Ticket getCurrentTicket(final String vehicleRegNumber) throws Exception {
+    /**
+     * @param vehicleRegNumber we want to get current ticket
+     * @return current ticket if successfully, else null
+     */
+    public Ticket getCurrentTicket(final String vehicleRegNumber) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        Ticket ticket;
+        Ticket ticket = null;
         try {
-            con = dataBaseConfig.getConnection();
+            con = dataBaseService.getConnection();
             ps = con.prepareStatement(DBConstants.GET_CURRENT_TICKET);
             //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME, DISCOUNT)
             ps.setString(1, vehicleRegNumber);
@@ -70,57 +77,68 @@ public class TicketDAO {
                 ticket.setInTime(rs.getTimestamp(4));
                 ticket.setOutTime(rs.getTimestamp(5));
                 ticket.setDiscount(rs.getBoolean(6));
-            } else {
-                throw new Exception("Error Getting current ticket");
             }
-        } catch (Exception ex) {
-            LOGGER.error("Error Getting current ticket", ex);
-            throw ex;
+        } catch (SQLException e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
+        } catch (Exception e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            dataBaseConfig.closeResultSet(rs);
-            dataBaseConfig.closePreparedStatement(ps);
-            dataBaseConfig.closeConnection(con);
+            dataBaseService.closeResultSet(rs);
+            dataBaseService.closePreparedStatement(ps);
+            dataBaseService.closeConnection(con);
         }
         return ticket;
     }
 
-    public boolean updateTicket(final Ticket ticket) throws Exception {
+    /**
+     * @param ticket we want to update
+     * @return true if successfully, else false
+     */
+    public boolean updateTicket(final Ticket ticket) {
         Connection con = null;
         PreparedStatement ps = null;
+        boolean result = false;
         try {
-            con = dataBaseConfig.getConnection();
+            con = dataBaseService.getConnection();
             ps = con.prepareStatement(DBConstants.UPDATE_TICKET);
             ps.setDouble(1, ticket.getPrice());
             ps.setTimestamp(2, new Timestamp(ticket.getOutTime().getTime()));
             ps.setInt(3, ticket.getId());
-            return ps.executeUpdate() == 1;
-        } catch (Exception ex) {
-            LOGGER.error("Error saving ticket info", ex);
-            throw ex;
+            result = ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
+        } catch (Exception e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            dataBaseConfig.closePreparedStatement(ps);
-            dataBaseConfig.closeConnection(con);
+            dataBaseService.closePreparedStatement(ps);
+            dataBaseService.closeConnection(con);
         }
+        return result;
     }
 
-    public boolean searchVehicleRegNumber(final String vehicleRegNumber) throws Exception {
+    /**
+     * @param vehicleRegNumber we want to search to know if recurring user or not
+     * @return true if recurring user, else false
+     */
+    public boolean searchVehicleRegNumber(final String vehicleRegNumber) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        boolean result;
+        boolean result = false;
         try {
-            con = dataBaseConfig.getConnection();
+            con = dataBaseService.getConnection();
             ps = con.prepareStatement(DBConstants.SEARCH_VEHICLE_REG_NUMBER);
             ps.setString(1, vehicleRegNumber);
             rs = ps.executeQuery();
             result = rs.next();
-        } catch (Exception ex) {
-            LOGGER.error("Error searching vehicleRegNumber : " + vehicleRegNumber, ex);
-            throw ex;
+        } catch (SQLException e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_EXECUTE_ERROR, e);
+        } catch (Exception e) {
+            LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            dataBaseConfig.closeResultSet(rs);
-            dataBaseConfig.closePreparedStatement(ps);
-            dataBaseConfig.closeConnection(con);
+            dataBaseService.closeResultSet(rs);
+            dataBaseService.closePreparedStatement(ps);
+            dataBaseService.closeConnection(con);
         }
         return result;
     }

@@ -3,10 +3,11 @@ package com.parkit.parkingsystem.integration;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
-import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
-import com.parkit.parkingsystem.integration.service.DataBasePrepareService;
+import com.parkit.parkingsystem.helper.DataBasePrepareService;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
+import com.parkit.parkingsystem.service.DataBaseConfigService;
+import com.parkit.parkingsystem.service.DataBaseService;
 import com.parkit.parkingsystem.service.FareCalculatorService;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
@@ -30,10 +31,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class ParkingServiceDataBaseIT {
 
-    private static final DataBaseTestConfig dataBaseTestConfig = new DataBaseTestConfig();
     private static ParkingSpotDAO parkingSpotDAO;
     private static DataBasePrepareService dataBasePrepareService;
     private static FareCalculatorService fareCalculatorService;
+    private static final String DATABASE_CONFIG_FILEPATH = "src/main/resources/dataBaseConfigTest.properties";
 
     @Spy
     private static TicketDAO ticketDAO;
@@ -43,9 +44,11 @@ public class ParkingServiceDataBaseIT {
 
     @BeforeAll
     private static void setUp() {
-        parkingSpotDAO = new ParkingSpotDAO(dataBaseTestConfig);
-        ticketDAO = new TicketDAO(dataBaseTestConfig);
-        dataBasePrepareService = new DataBasePrepareService();
+        DataBaseConfigService dataBaseTestConfigService = new DataBaseConfigService(DATABASE_CONFIG_FILEPATH);
+        DataBaseService dataBaseTestService = new DataBaseService(dataBaseTestConfigService.getDataBaseConfig());
+        parkingSpotDAO = new ParkingSpotDAO(dataBaseTestService);
+        ticketDAO = new TicketDAO(dataBaseTestService);
+        dataBasePrepareService = new DataBasePrepareService(dataBaseTestService);
         fareCalculatorService = new FareCalculatorService();
     }
 

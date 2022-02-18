@@ -1,6 +1,7 @@
 package com.parkit.parkingsystem.service;
 
 import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.exceptions.FareCalculatorException;
 import com.parkit.parkingsystem.model.Ticket;
 
 import java.math.BigDecimal;
@@ -9,10 +10,20 @@ import java.util.Date;
 
 public class FareCalculatorService {
 
-    public void calculateFare(final Ticket ticket) {
+    /**
+     * Sets calculated fare price (rounded to 2 decimals places) into param ticket if successfully, else throws FareCalculatorException
+     *
+     * @param ticket we need to calculate fare
+     * @throws FareCalculatorException when fare can't be calculated
+     */
 
-        if ((ticket.getOutTime() == null) || (ticket.getOutTime().before(ticket.getInTime()))) {
-            throw new IllegalArgumentException("Out time provided is incorrect:");
+    public void calculateFare(final Ticket ticket) throws FareCalculatorException {
+
+        if (ticket.getOutTime() == null) {
+            throw new FareCalculatorException("Error while calculating fare - Out time is null");
+        }
+        if (ticket.getOutTime().before(ticket.getInTime())) {
+            throw new FareCalculatorException("Error while calculating fare - Out time is before In Time : Out=" + ticket.getOutTime() + " / In=" + ticket.getInTime());
         }
 
         Date inTime = ticket.getInTime();
@@ -46,6 +57,5 @@ public class FareCalculatorService {
         BigDecimal rawPrice = parkingTimeInHours.multiply(discountAppliedRatio).multiply(ratePerHour);
         BigDecimal RoundedPrice = rawPrice.setScale(2, RoundingMode.HALF_UP);
         ticket.setPrice(RoundedPrice.doubleValue());
-
     }
 }

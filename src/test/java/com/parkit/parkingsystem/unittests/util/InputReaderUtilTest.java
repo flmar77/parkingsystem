@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,7 +22,7 @@ public class InputReaderUtilTest {
     private static Scanner scanner;
 
     @Test
-    public void should_returnInt_whenReadSelectionAndSetInInt() throws NumberFormatException {
+    public void should_returnPositiveInt_whenReadSelectionAndSetInInt() throws NumberFormatException {
         when(scanner.nextLine()).thenReturn("1");
         inputReaderUtil = new InputReaderUtil(scanner);
 
@@ -30,11 +30,11 @@ public class InputReaderUtilTest {
     }
 
     @Test
-    public void should_throwNumberFormatException_whenReadSelectionAndSetInString() throws NumberFormatException {
+    public void should_returnNegativeInt_whenReadSelectionAndSetInString() throws NumberFormatException {
         when(scanner.nextLine()).thenReturn("ABC");
         inputReaderUtil = new InputReaderUtil(scanner);
 
-        assertThrows(NumberFormatException.class, () -> inputReaderUtil.readSelection());
+        assertEquals(-1, inputReaderUtil.readSelection());
     }
 
     @Test
@@ -46,11 +46,11 @@ public class InputReaderUtilTest {
     }
 
     @Test
-    public void should_throwIllegalArgumentException_whenReadVehicleRegistrationNumberAndSetInNothing() throws NoSuchElementException, IllegalStateException, IllegalArgumentException {
+    public void should_returnNull_whenReadVehicleRegistrationNumberAndSetInNothing() throws NoSuchElementException, IllegalStateException, IllegalArgumentException {
         when(scanner.nextLine()).thenReturn("");
         inputReaderUtil = new InputReaderUtil(scanner);
 
-        assertThrows(IllegalArgumentException.class, () -> inputReaderUtil.readVehicleRegistrationNumber());
+        assertNull(inputReaderUtil.readVehicleRegistrationNumber());
     }
 
 }
