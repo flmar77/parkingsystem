@@ -21,6 +21,10 @@ public class TicketDAO {
         this.dataBaseService = dataBaseService;
     }
 
+    /**
+     * @param ticket we want to save
+     * @return true if successfully, else false
+     */
     public boolean saveTicket(final Ticket ticket) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -48,6 +52,10 @@ public class TicketDAO {
         return result;
     }
 
+    /**
+     * @param vehicleRegNumber we want to get current ticket
+     * @return current ticket if successfully, else null
+     */
     public Ticket getCurrentTicket(final String vehicleRegNumber) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -82,6 +90,10 @@ public class TicketDAO {
         return ticket;
     }
 
+    /**
+     * @param ticket we want to update
+     * @return true if successfully, else false
+     */
     public boolean updateTicket(final Ticket ticket) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -104,6 +116,10 @@ public class TicketDAO {
         return result;
     }
 
+    /**
+     * @param vehicleRegNumber we want to search to know if recurring user or not
+     * @return true if recurring user, else false
+     */
     public boolean searchVehicleRegNumber(final String vehicleRegNumber) {
         Connection con = null;
         PreparedStatement ps = null;

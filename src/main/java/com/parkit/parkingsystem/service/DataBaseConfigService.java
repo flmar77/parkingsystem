@@ -19,6 +19,9 @@ public class DataBaseConfigService {
         this.databaseConfigPath = databaseConfigPath;
     }
 
+    /**
+     * @return dataBaseConfig from dataBaseProperties if successfully, else null
+     */
     public DataBaseConfig getDataBaseConfig() {
 
         FileInputStream fileInputStream = null;

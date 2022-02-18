@@ -10,6 +10,13 @@ import java.util.Date;
 
 public class FareCalculatorService {
 
+    /**
+     * Sets calculated fare price (rounded to 2 decimals places) into param ticket if successfully, else throws FareCalculatorException
+     *
+     * @param ticket we need to calculate fare
+     * @throws FareCalculatorException when fare can't be calculated
+     */
+
     public void calculateFare(final Ticket ticket) throws FareCalculatorException {
 
         if (ticket.getOutTime() == null) {

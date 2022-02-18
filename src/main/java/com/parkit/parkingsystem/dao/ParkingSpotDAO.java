@@ -23,6 +23,10 @@ public class ParkingSpotDAO {
         this.dataBaseService = dataBaseService;
     }
 
+    /**
+     * @param parkingType we need to know availability
+     * @return int parking Number if successfully, else -1
+     */
     public int getNextAvailableSlot(final ParkingType parkingType) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -48,6 +52,10 @@ public class ParkingSpotDAO {
         return result;
     }
 
+    /**
+     * @param parkingSpot we have to update
+     * @return true if successfully, else false
+     */
     public boolean updateParking(final ParkingSpot parkingSpot) {
         Connection con = null;
         PreparedStatement ps = null;

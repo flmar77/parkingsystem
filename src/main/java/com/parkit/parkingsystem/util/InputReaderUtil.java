@@ -10,6 +10,9 @@ public class InputReaderUtil {
         this.scanner = scanner;
     }
 
+    /**
+     * @return int from System.in if successfully, else -1
+     */
     public int readSelection() {
         int result = -1;
         try {
@@ -20,6 +23,9 @@ public class InputReaderUtil {
         return result;
     }
 
+    /**
+     * @return String from System.in if successfully, else null
+     */
     public String readVehicleRegistrationNumber() {
         String result = null;
         String vehicleRegNumber = scanner.nextLine();
