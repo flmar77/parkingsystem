@@ -26,24 +26,36 @@ public class DataBaseService {
                 dataBaseConfig.getDataBaseUrl(), dataBaseConfig.getDataBaseUsername(), dataBaseConfig.getDataBasePassword());
     }
 
-    public void closeConnection(final Connection con) throws SQLException {
+    public void closeConnection(final Connection con) {
         if (con != null) {
-            con.close();
-            LOGGER.info("Closing DB connection");
+            try {
+                con.close();
+                LOGGER.info("Closing DB connection");
+            } catch (SQLException e) {
+                LOGGER.error("Error while closing connection", e);
+            }
         }
     }
 
-    public void closePreparedStatement(final PreparedStatement ps) throws SQLException {
+    public void closePreparedStatement(final PreparedStatement ps) {
         if (ps != null) {
-            ps.close();
-            LOGGER.info("Closing Prepared Statement");
+            try {
+                ps.close();
+                LOGGER.info("Closing Prepared Statement");
+            } catch (SQLException e) {
+                LOGGER.error("Error while closing prepared statement", e);
+            }
         }
     }
 
-    public void closeResultSet(final ResultSet rs) throws SQLException {
+    public void closeResultSet(final ResultSet rs) {
         if (rs != null) {
-            rs.close();
-            LOGGER.info("Closing Result Set");
+            try {
+                rs.close();
+                LOGGER.info("Closing Result Set");
+            } catch (SQLException e) {
+                LOGGER.error("Error while closing result set", e);
+            }
         }
     }
 }

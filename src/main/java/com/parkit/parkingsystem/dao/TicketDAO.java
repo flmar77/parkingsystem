@@ -42,13 +42,8 @@ public class TicketDAO {
         } catch (Exception e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            try {
-                //TODO : try/catch à remettre côté DBservice
-                dataBaseService.closePreparedStatement(ps);
-                dataBaseService.closeConnection(con);
-            } catch (SQLException e) {
-                LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
-            }
+            dataBaseService.closePreparedStatement(ps);
+            dataBaseService.closeConnection(con);
         }
         return result;
     }
@@ -80,13 +75,9 @@ public class TicketDAO {
         } catch (Exception e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            try {
-                dataBaseService.closeResultSet(rs);
-                dataBaseService.closePreparedStatement(ps);
-                dataBaseService.closeConnection(con);
-            } catch (SQLException e) {
-                LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
-            }
+            dataBaseService.closeResultSet(rs);
+            dataBaseService.closePreparedStatement(ps);
+            dataBaseService.closeConnection(con);
         }
         return ticket;
     }
@@ -107,12 +98,8 @@ public class TicketDAO {
         } catch (Exception e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            try {
-                dataBaseService.closePreparedStatement(ps);
-                dataBaseService.closeConnection(con);
-            } catch (SQLException e) {
-                LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
-            }
+            dataBaseService.closePreparedStatement(ps);
+            dataBaseService.closeConnection(con);
         }
         return result;
     }
@@ -133,13 +120,9 @@ public class TicketDAO {
         } catch (Exception e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            try {
-                dataBaseService.closeResultSet(rs);
-                dataBaseService.closePreparedStatement(ps);
-                dataBaseService.closeConnection(con);
-            } catch (SQLException e) {
-                LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
-            }
+            dataBaseService.closeResultSet(rs);
+            dataBaseService.closePreparedStatement(ps);
+            dataBaseService.closeConnection(con);
         }
         return result;
     }

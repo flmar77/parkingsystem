@@ -41,13 +41,9 @@ public class ParkingSpotDAO {
         } catch (Exception e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            try {
-                dataBaseService.closeResultSet(rs);
-                dataBaseService.closePreparedStatement(ps);
-                dataBaseService.closeConnection(con);
-            } catch (SQLException e) {
-                LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
-            }
+            dataBaseService.closeResultSet(rs);
+            dataBaseService.closePreparedStatement(ps);
+            dataBaseService.closeConnection(con);
         }
         return result;
     }
@@ -67,12 +63,8 @@ public class ParkingSpotDAO {
         } catch (Exception e) {
             LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CONNECTION_ERROR, e);
         } finally {
-            try {
-                dataBaseService.closePreparedStatement(ps);
-                dataBaseService.closeConnection(con);
-            } catch (SQLException e) {
-                LOGGER.error(CustomMessages.MESSAGE_LOG_DATABASE_CLOSE_ERROR, e);
-            }
+            dataBaseService.closePreparedStatement(ps);
+            dataBaseService.closeConnection(con);
         }
         return result;
     }

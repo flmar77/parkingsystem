@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TicketDAOTest {
 
-    private static final String DATABASE_CONFIG_FILEPATH = "src/main/java/com/parkit/parkingsystem/config/dataBaseConfigTest.properties";
+    private static final String DATABASE_CONFIG_FILEPATH = "src/main/resources/dataBaseConfigTest.properties";
 
     private static TicketDAO ticketDAO;
     private static DataBasePrepareService dataBasePrepareService;

@@ -20,9 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingSpotDAOTest {
-
-    //TODO : idem que pour prod (move to resources)
-    private static final String DATABASE_CONFIG_FILEPATH = "src/main/java/com/parkit/parkingsystem/config/dataBaseConfigTest.properties";
+    
+    private static final String DATABASE_CONFIG_FILEPATH = "src/main/resources/dataBaseConfigTest.properties";
 
     private static ParkingSpotDAO parkingSpotDAO;
     private static DataBasePrepareService dataBasePrepareService;

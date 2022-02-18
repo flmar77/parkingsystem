@@ -158,17 +158,6 @@ public class FareCalculatorServiceTest {
     }
 
     @Test
-    public void should_throwFareCalculatorException_whenUnknownType() {
-        inTime.setTime(currentTimeMillis - (60 * 60 * 1000));
-        ParkingSpot parkingSpot = new ParkingSpot(1, null, false);
-        ticket.setInTime(inTime);
-        ticket.setOutTime(outTime);
-        ticket.setParkingSpot(parkingSpot);
-
-        assertThrows(FareCalculatorException.class, () -> fareCalculatorService.calculateFare(ticket));
-    }
-
-    @Test
     public void should_throwFareCalculatorException_whenOutTimeInFuture() {
         inTime.setTime(currentTimeMillis + (60 * 60 * 1000));
         ticket.setInTime(inTime);

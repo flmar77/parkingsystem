@@ -123,8 +123,6 @@ public class ParkingService {
         while (parkingType == null) {
             int input = inputReaderUtil.readSelection();
             switch (input) {
-                case -1:
-                    break;
                 case 1:
                     parkingType = ParkingType.CAR;
                     break;
@@ -140,8 +138,8 @@ public class ParkingService {
 
     private String getVehicleRegNumber() {
         String result = null;
-        System.out.println("Please type the vehicle registration number and press enter key");
         while (result == null) {
+            System.out.println("Please type a valid vehicle registration number and press enter key");
             result = inputReaderUtil.readVehicleRegistrationNumber();
         }
         return result;

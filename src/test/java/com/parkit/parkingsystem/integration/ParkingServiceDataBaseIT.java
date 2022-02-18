@@ -34,7 +34,7 @@ public class ParkingServiceDataBaseIT {
     private static ParkingSpotDAO parkingSpotDAO;
     private static DataBasePrepareService dataBasePrepareService;
     private static FareCalculatorService fareCalculatorService;
-    private static final String DATABASE_CONFIG_FILEPATH = "src/main/java/com/parkit/parkingsystem/config/dataBaseConfigTest.properties";
+    private static final String DATABASE_CONFIG_FILEPATH = "src/main/resources/dataBaseConfigTest.properties";
 
     @Spy
     private static TicketDAO ticketDAO;

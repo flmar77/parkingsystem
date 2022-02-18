@@ -13,8 +13,7 @@ public abstract class ParkingInterface {
 
     private static final Logger LOGGER = LogManager.getLogger("ParkingInterface");
 
-    //TODO : utiliser getClass().getResourceAsStream()
-    private static final String DATABASE_CONFIG_FILEPATH = "src/main/java/com/parkit/parkingsystem/config/dataBaseConfigProd.properties";
+    private static final String DATABASE_CONFIG_FILEPATH = "src/main/resources/dataBaseConfigProd.properties";
 
     public static void loadInterface() throws ParkingServiceException {
         LOGGER.info("Interface initialized!!!");
@@ -35,8 +34,6 @@ public abstract class ParkingInterface {
             loadMenu();
             int option = inputReaderUtil.readSelection();
             switch (option) {
-                case -1:
-                    break;
                 case 1:
                     parkingService.processIncomingVehicle();
                     break;
